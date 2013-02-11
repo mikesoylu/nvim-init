@@ -180,7 +180,7 @@ au FileType xml exe ":silent 1,$!xmllint --format --recover - 2>/dev/null"
 autocmd FileType crontab setlocal backupcopy=yes
 
 " turn-on distraction free writing mode for markdown files
-au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn} call DistractionFreeWriting()
+" au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn} call DistractionFreeWriting()
 
 function! DistractionFreeWriting()
     colorscheme iawriter
@@ -305,3 +305,13 @@ set laststatus=2
 let g:syntastic_enable_signs = 1
 let g:syntastic_auto_jump = 0
 let g:syntastic_puppet_lint_disable = 0
+
+" disable arrow keys
+map <up> <nop>
+map <down> <nop>
+map <left> <nop>
+map <right> <nop>
+imap <up> <nop>
+imap <down> <nop>
+imap <left> <nop>
+imap <right> <nop>
