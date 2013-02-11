@@ -78,6 +78,11 @@ filetype plugin indent on     " required!
 " Configurations
 """"""""""""""""
 set background=dark
+set guifont=Consolas
+
+" AS3 syntax
+autocmd BufRead *.as set filetype=Javascript
+autocmd BufRead *.mxml set filetype=Javascript
 
 " Wildmenu completion
 """""""""""""""""""""
@@ -93,18 +98,13 @@ set wildignore+=*.luac                           " Lua byte code
 set wildignore+=*.pyc                            " Python byte code
 set wildignore+=**.class                          " Cursed Java class files
 
-" Save when losing focus
-set autowriteall " Auto-save files when switching buffers or leaving vim.
-au FocusLost * silent! :wa
-au TabLeave * silent! :wa
-
 " Resize splits when the window is resized
 au VimResized * exe "normal! \<c-w>="
 
 if !has("gui_running")
     colorscheme chance-of-storm
 else
-    colorscheme solarized
+    colorscheme base16-monokai
 endif
 
 " Basic
@@ -135,7 +135,7 @@ if has("gui_running")
 endif
 
 " Special characters for hilighting non-priting spaces/tabs/etc.
-set list listchars=tab:»\ ,trail:·
+"set list listchars=tab:»\ ,trail:·
 
 " Default Tabs & spaces
 set tabstop=4     " a tab is four spaces
@@ -180,7 +180,7 @@ au FileType xml exe ":silent 1,$!xmllint --format --recover - 2>/dev/null"
 autocmd FileType crontab setlocal backupcopy=yes
 
 " turn-on distraction free writing mode for markdown files
-" au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn} call DistractionFreeWriting()
+au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn} call DistractionFreeWriting()
 
 function! DistractionFreeWriting()
     colorscheme iawriter
@@ -270,7 +270,7 @@ let g:gist_detect_filetype = 2
 let g:gist_show_privates = 1
 
 " TaskList
-"map <leader>l <Plug>TaskList
+map <leader>l <Plug>TaskList
 
 " TagBar
 nnoremap <silent> <F2> :TagbarToggle<CR>
@@ -305,6 +305,3 @@ set laststatus=2
 let g:syntastic_enable_signs = 1
 let g:syntastic_auto_jump = 0
 let g:syntastic_puppet_lint_disable = 0
-
-
-let g:Powerline_symbols = 'fancy'
