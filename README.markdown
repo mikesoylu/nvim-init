@@ -20,7 +20,7 @@ $ git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
  - Next, get my vim-dotfiles & symlink the `.vimrc` to your `$HOME/.vimrc`:
 
 ```sh
-$ git clone git@github.com:jperras/vim-dotfiles.git ~/.vim && ln -s ~/.vim/.vimrc ~/.vimrc
+$ git clone git@github.com:mikesoylu/vim-dotfiles.git ~/.vim && ln -s ~/.vim/.vimrc ~/.vimrc
 ```
 
  - Finally, we need to launch Vim and then invoke the appropriate Vundle commands to install all of the bundles using the `:BundleInstall` command. When this is completed

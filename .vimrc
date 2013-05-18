@@ -22,19 +22,18 @@ Bundle 'tpope/vim-fugitive'
 " System
 Bundle 'scrooloose/nerdtree'
 Bundle 'vim-scripts/Gist.vim'
-Bundle 'majutsushi/tagbar'
 Bundle 'mileszs/ack.vim'
+Bundle 'majutsushi/tagbar'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-surround'
 Bundle 'scrooloose/syntastic'
 Bundle 'ervandew/supertab'
-Bundle 'Raimondi/delimitMate'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'sophacles/vim-bundle-sparkup'
-Bundle 'Rykka/ColorV'
 Bundle 'kien/ctrlp.vim'
 
 " Syntaxes and such.
+Bundle 'leafgarland/typescript-vim.git'
 Bundle 'tpope/vim-cucumber'
 Bundle 'leshill/vim-json'
 Bundle 'tpope/vim-liquid'
@@ -57,10 +56,6 @@ Bundle 'fs111/pydoc.vim'
 Bundle 'vim-scripts/python_match.vim'
 Bundle 'jmcantrell/vim-virtualenv'
 
-" Ruby specific
-Bundle "vim-ruby/vim-ruby"
-Bundle 'tpope/vim-endwise'
-
 " Fun, but not useful
 Bundle 'davidoc/taskpaper.vim'
 Bundle 'altercation/vim-colors-solarized'
@@ -69,7 +64,6 @@ Bundle 'mgutz/vim-colors'
 Bundle 'ehamberg/vim-cute-python'
 Bundle 'tpope/vim-speeddating'
 Bundle 'Lokaltog/vim-powerline'
-Bundle 'ChrisKempson/Vim-Tomorrow-Theme'
 Bundle 'chriskempson/base16-vim'
 Bundle 'chreekat/vim-paren-crosshairs'
 
@@ -78,7 +72,12 @@ filetype plugin indent on     " required!
 " Configurations
 """"""""""""""""
 set background=dark
-set guifont=Consolas
+
+" OS specific stuff
+""""""""""""""""
+if has("win32")
+    set guifont=Consolas
+endif
 
 " AS3 syntax
 autocmd BufRead *.as set filetype=Javascript
@@ -126,7 +125,7 @@ set incsearch     " show search matches as you type
 set history=1000         " remember more commands and search history
 set undolevels=1000      " use many muchos levels of undo
 set title                " change the terminal's title
-set visualbell           " don't beep
+set novisualbell           " don't beep
 set noerrorbells         " don't beep
 
 " Remove the toolbar if we're running under a GUI (e.g. MacVIM).
@@ -172,9 +171,6 @@ autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 autocmd FileType mail highlight clear ExtraWhitespace
 autocmd FileType mail setlocal listchars=
 
-" Reformat XML files
-au FileType xml exe ":silent 1,$!xmllint --format --recover - 2>/dev/null"
-
 " Crontab auto-commands
 """""""""""""""""""""""
 autocmd FileType crontab setlocal backupcopy=yes
@@ -200,17 +196,9 @@ endfunction
 " Toggle spellcheck in normal mode
 :map <F5> :setlocal spell! spelllang=en_us<CR>
 
-" Ruby Configurations
-"""""""""""""""""""""
-autocmd filetype ruby setlocal noexpandtab shiftwidth=2 tabstop=2
-
-" PHP Configurations
-""""""""""""""""""""
-autocmd FileType php setlocal colorcolumn=100
-
 " HTML configurations
 """""""""""""""""""""
-autocmd FileType html setlocal shiftwidth=4 tabstop=4 softtabstop=4 noexpandtab
+autocmd FileType html setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
 
 " Python configurations
 """""""""""""""""""""""
@@ -229,13 +217,6 @@ au BufNewFile,BufReadPost *.coffee setlocal shiftwidth=2 expandtab
 """""""""""""""""""""""""""
 au BufNewFile,BufReadPost *.js setlocal shiftwidth=2 expandtab
 
-" Puppet configurations
-"""""""""""""""""""""""
-au FileType puppet setlocal noexpandtab
-
-" Get jinja filetype selection working correctly for *.jinja.html files.
-au BufNewFile,BufReadPost *.jinja.html setlocal filetype=htmljinja
-
 " Make sure we hilight extra whitespace in the most annoying way possible.
 highlight ExtraWhitespace ctermbg=red guibg=red
 match ExtraWhitespace /\s\+$/
@@ -246,13 +227,12 @@ autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 " Custom mappings
 """"""""""""""""""
 
-" Genral
-noremap <silent> <F4> :QFix<CR>
-
-
 " Change leader
 let mapleader = ","
 let g:mapleader = ","
+
+" Genral
+noremap <silent> <F4> :QFix<CR>
 
 " Get rid of search hilighting with ,/
 nnoremap <silent> <leader>/ :nohlsearch<CR>
@@ -271,12 +251,6 @@ let g:gist_show_privates = 1
 
 " TaskList
 map <leader>l <Plug>TaskList
-
-" TagBar
-nnoremap <silent> <F2> :TagbarToggle<CR>
-let g:tagbar_ctags_bin = '/usr/local/bin/ctags'
-let g:tagbar_autoshowtag = 1
-let g:tagbar_autofocus = 1
 
 " crtl-p
 let g:ctrlp_map = '<c-p>'
@@ -304,7 +278,6 @@ au Syntax * RainbowParenthesesLoadBraces
 set laststatus=2
 let g:syntastic_enable_signs = 1
 let g:syntastic_auto_jump = 0
-let g:syntastic_puppet_lint_disable = 0
 
 " disable arrow keys
 map <up> <nop>
