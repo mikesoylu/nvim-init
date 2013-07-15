@@ -44,7 +44,6 @@ Bundle 'plasticboy/vim-markdown'
 Bundle 'groenewege/vim-less'
 Bundle 'jcf/vim-latex'
 Bundle 'othree/html5.vim'
-Bundle 'mutewinter/nginx.vim'
 Bundle 'msanders/cocoa.vim'
 Bundle 'empanda/vim-varnish'
 Bundle 'itspriddle/vim-jquery'
@@ -65,7 +64,6 @@ Bundle 'ehamberg/vim-cute-python'
 Bundle 'tpope/vim-speeddating'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'chriskempson/base16-vim'
-Bundle 'chreekat/vim-paren-crosshairs'
 
 filetype plugin indent on     " required!
 
@@ -161,10 +159,9 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 nnoremap / /\v
 vnoremap / /\v
 
-
 " General auto-commands
 """""""""""""""""""""""
-autocmd FileType * setlocal colorcolumn=0
+autocmd FileType * setlocal colorcolumn=80
 autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
 
 " Get rid of trailing whitespace highlighting in mutt.
@@ -278,7 +275,3 @@ au Syntax * RainbowParenthesesLoadBraces
 set laststatus=2
 let g:syntastic_enable_signs = 1
 let g:syntastic_auto_jump = 0
-
-" Show a line at column 80
-:set textwidth=80
-:set colorcolumn=+1
