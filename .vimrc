@@ -15,52 +15,33 @@ Bundle 'gmarik/vundle'
 " :BundleSearch(!) foo - search(or refresh cache first) for foo
 " :BundleClean(!)      - confirm(or auto-approve) removal of unused bundles
 
-
 " VCS
 Bundle 'tpope/vim-fugitive'
 
 " System
 Bundle 'scrooloose/nerdtree'
-Bundle 'vim-scripts/Gist.vim'
-Bundle 'mileszs/ack.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-surround'
-Bundle 'scrooloose/syntastic'
 Bundle 'ervandew/supertab'
 Bundle 'kien/rainbow_parentheses.vim'
-Bundle 'sophacles/vim-bundle-sparkup'
 Bundle 'kien/ctrlp.vim'
+Bundle 'terryma/vim-multiple-cursors'
+Bundle 'tpope/vim-dispatch'
+Bundle 'jmcantrell/vim-virtualenv'
 
 " Syntaxes and such.
 Bundle 'leafgarland/typescript-vim.git'
-Bundle 'tpope/vim-cucumber'
 Bundle 'leshill/vim-json'
-Bundle 'tpope/vim-liquid'
-Bundle 'puppetlabs/puppet-syntax-vim'
-Bundle 'tpope/vim-haml'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'groenewege/vim-less'
-Bundle 'jcf/vim-latex'
 Bundle 'othree/html5.vim'
-Bundle 'msanders/cocoa.vim'
-Bundle 'empanda/vim-varnish'
-Bundle 'itspriddle/vim-jquery'
-Bundle 'atourino/jinja.vim'
-
-" Python bundles
-Bundle 'nvie/vim-flake8'
-Bundle 'fs111/pydoc.vim'
-Bundle 'vim-scripts/python_match.vim'
-Bundle 'jmcantrell/vim-virtualenv'
 
 " Fun, but not useful
 Bundle 'davidoc/taskpaper.vim'
-Bundle 'altercation/vim-colors-solarized'
 Bundle 'skammer/vim-css-color'
 Bundle 'mgutz/vim-colors'
-Bundle 'ehamberg/vim-cute-python'
 Bundle 'tpope/vim-speeddating'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'chriskempson/base16-vim'
@@ -80,20 +61,6 @@ endif
 " AS3 syntax
 autocmd BufRead *.as set filetype=Javascript
 autocmd BufRead *.mxml set filetype=Javascript
-
-" Wildmenu completion
-"""""""""""""""""""""
-set wildmenu
-set wildmode=list:longest
-set wildignore+=.hg,.git,.svn                    " Version control
-set wildignore+=*.aux,*.out,*.toc                " LaTeX intermediate files
-set wildignore+=*.o,*.obj,*.exe,*.dll,*.manifest " compiled object files
-set wildignore+=*.spl                            " compiled spelling word lists
-set wildignore+=*.sw?                            " Vim swap files
-set wildignore+=*.DS_Store                       " OSX bullshit
-set wildignore+=*.luac                           " Lua byte code
-set wildignore+=*.pyc                            " Python byte code
-set wildignore+=**.class                          " Cursed Java class files
 
 " Resize splits when the window is resized
 au VimResized * exe "normal! \<c-w>="
@@ -182,7 +149,6 @@ function! DistractionFreeWriting()
     set lines=60 columns=100           " size of the editable area
     set fuoptions=background:#00f5f6f6 " macvim specific setting for editor's background color
     set guioptions-=r                  " remove right scrollbar
-    set laststatus=0                   " don't show status line
     set noruler                        " don't show ruler
     set fullscreen                     " go to fullscreen editing mode
     set linebreak                      " break the lines on words
@@ -196,14 +162,6 @@ endfunction
 " HTML configurations
 """""""""""""""""""""
 autocmd FileType html setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
-
-" Python configurations
-"""""""""""""""""""""""
-autocmd FileType python setlocal shiftwidth=4 expandtab tabstop=4 softtabstop=4
-autocmd FileType python setlocal colorcolumn=80
-autocmd FileType python map <buffer> <F4> :call Flake8()<CR>
-autocmd FileType python autocmd BufWritePre * :%s/\s\+$//e
-autocmd FileType python set omnifunc=pythoncomplete#Complete
 
 " Coffeescript configurations
 """""""""""""""""""""""""""""
@@ -241,11 +199,6 @@ cmap w!! w !sudo tee % >/dev/null
 " Plugin configurations
 """""""""""""""""""""""
 
-" Gist
-let g:gist_clip_command = 'pbcopy'
-let g:gist_detect_filetype = 2
-let g:gist_show_privates = 1
-
 " TaskList
 map <leader>l <Plug>TaskList
 
@@ -256,22 +209,11 @@ let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -
 " NERDTree
 nnoremap <Leader>f :NERDTreeToggle<CR>
 
-" SnipMate
-let g:snippets_dir = "~/.vim/bundle/snipmate-snippets"
-
-" Sparkup
-let g:sparkupExecuteMapping = '<c-y>'
-let g:sparkupNextMapping = '<c-k>'
-
-" Jedi
-let g:jedi#goto_command = "<leader>g"
-
 " Double rainbow - What does it mean!?
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
-set laststatus=2
-let g:syntastic_enable_signs = 1
-let g:syntastic_auto_jump = 0
+" hide ^M line endings
+nnoremap <leader>ds :e ++ff=dos<cr>
