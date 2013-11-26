@@ -73,6 +73,7 @@ endif
 
 " Basic
 syntax enable
+set laststatus=2  " show status line
 set number        " always show line numbers
 set hidden        " Allow un-saved buffers in background
 set clipboard=unnamed " Share system clipboard.
