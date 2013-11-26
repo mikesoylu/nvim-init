@@ -73,6 +73,7 @@ endif
 
 " Basic
 syntax enable
+set grepprg=grep
 set laststatus=2  " show status line
 set number        " always show line numbers
 set hidden        " Allow un-saved buffers in background
@@ -188,7 +189,7 @@ let mapleader = ","
 let g:mapleader = ","
 
 " Genral
-noremap <silent> <F4> :QFix<CR>
+map <F4> :execute " grep -srnw --binary-files=without-match --exclude-dir={.git,node_modules,.svn} . -e " . expand("<cword>") . " " <bar> cwindow<CR>
 
 " hide ^M line endings
 nnoremap <leader>ds :e ++ff=dos<cr>
@@ -199,6 +200,8 @@ nnoremap <silent> <leader>/ :nohlsearch<CR>
 " Fix those pesky situations where you edit & need sudo to save
 cmap w!! w !sudo tee % >/dev/null
 
+" quickfix close
+nnoremap <silent> <esc> :ccl<CR>
 
 " Plugin configurations
 """""""""""""""""""""""
