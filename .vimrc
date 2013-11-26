@@ -23,12 +23,12 @@ Bundle 'scrooloose/nerdtree'
 Bundle 'majutsushi/tagbar'
 Bundle 'scrooloose/nerdcommenter'
 Bundle 'tpope/vim-surround'
-Bundle 'ervandew/supertab'
 Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'kien/ctrlp.vim'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'tpope/vim-dispatch'
 Bundle 'jmcantrell/vim-virtualenv'
+Bundle 'Shougo/neocomplcache.vim'
 
 " Syntaxes and such.
 Bundle 'leafgarland/typescript-vim.git'
@@ -190,6 +190,9 @@ let g:mapleader = ","
 " Genral
 noremap <silent> <F4> :QFix<CR>
 
+" hide ^M line endings
+nnoremap <leader>ds :e ++ff=dos<cr>
+
 " Get rid of search hilighting with ,/
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
@@ -200,8 +203,17 @@ cmap w!! w !sudo tee % >/dev/null
 " Plugin configurations
 """""""""""""""""""""""
 
-" TaskList
-map <leader>l <Plug>TaskList
+" Neocomplete
+let g:neocomplcache_enable_at_startup = 1
+let g:neocomplcache_enable_auto_select = 1
+inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+function! s:my_cr_function()
+    return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
+endfunction
+
+autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 
 " crtl-p
 let g:ctrlp_map = '<c-p>'
@@ -209,12 +221,11 @@ let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -
 
 " NERDTree
 nnoremap <Leader>f :NERDTreeToggle<CR>
+autocmd VimEnter * NERDTree
+autocmd BufEnter * NERDTreeMirror
 
 " Double rainbow - What does it mean!?
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
-
-" hide ^M line endings
-nnoremap <leader>ds :e ++ff=dos<cr>
