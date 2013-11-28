@@ -56,6 +56,8 @@ set background=dark
 """"""""""""""""
 if has("win32")
     set guifont=Consolas
+else
+    set guifont=Monospace
 endif
 
 " AS3 syntax
@@ -101,7 +103,7 @@ if has("gui_running")
 endif
 
 " Special characters for hilighting non-priting spaces/tabs/etc.
-"set list listchars=tab:»\ ,trail:·
+set list listchars=tab:»\ ,trail:~
 
 " Default Tabs & spaces
 set tabstop=4     " a tab is four spaces
@@ -131,11 +133,6 @@ vnoremap / /\v
 " General auto-commands
 """""""""""""""""""""""
 autocmd FileType * setlocal colorcolumn=80
-autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-
-" Get rid of trailing whitespace highlighting in mutt.
-autocmd FileType mail highlight clear ExtraWhitespace
-autocmd FileType mail setlocal listchars=
 
 " Crontab auto-commands
 """""""""""""""""""""""
@@ -145,14 +142,16 @@ autocmd FileType crontab setlocal backupcopy=yes
 " au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn} call DistractionFreeWriting()
 
 function! DistractionFreeWriting()
-    colorscheme iawriter
+    colorscheme base16-solarized
+    if has("win32")
+        set guifont=Consolas:h12
+    else
+        set guifont=Monospace:h12
+    endif
     set background=light
-    set gfn=Cousine:h14                " font to use
     set lines=60 columns=100           " size of the editable area
-    set fuoptions=background:#00f5f6f6 " macvim specific setting for editor's background color
     set guioptions-=r                  " remove right scrollbar
     set noruler                        " don't show ruler
-    set fullscreen                     " go to fullscreen editing mode
     set linebreak                      " break the lines on words
 endfunction
 
@@ -173,13 +172,6 @@ au BufNewFile,BufReadPost *.coffee setlocal shiftwidth=2 expandtab
 " Javascript configurations
 """""""""""""""""""""""""""
 au BufNewFile,BufReadPost *.js setlocal shiftwidth=2 expandtab
-
-" Make sure we hilight extra whitespace in the most annoying way possible.
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
 
 " Custom mappings
 """"""""""""""""""
@@ -220,12 +212,17 @@ autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 
 " crtl-p
 let g:ctrlp_map = '<c-p>'
-let g:ctrlp_user_command = ['.git/', 'cd %s && git ls-files --exclude-standard -co']
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(node_modules|git|hg|svn)$',
+  \ 'file': '\v\.(exe|o|out|so|dll|wmv|mov|mkv|pdf|jpg|gif|jpeg|png|mp4|zip|7z|tar|gz|bz2|rar|swc|swf|iso|msi|wav|bin|mp3|ttf)$',
+  \ }
+let g:ctrlp_max_depth = 8
+let g:ctrlp_max_files = 512
+let g:ctrlp_show_hidden = 1
+let g:ctrlp_use_caching = 0
 
 " NERDTree
 nnoremap <Leader>f :NERDTreeToggle<CR>
-autocmd VimEnter * NERDTree
-autocmd BufEnter * NERDTreeMirror
 
 " Double rainbow - What does it mean!?
 au VimEnter * RainbowParenthesesToggle
