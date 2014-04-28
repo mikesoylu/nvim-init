@@ -37,6 +37,8 @@ Bundle 'kchmck/vim-coffee-script'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'groenewege/vim-less'
 Bundle 'othree/html5.vim'
+Bundle 'digitaltoad/vim-jade'
+Bundle 'wavded/vim-stylus'
 
 " Fun, but not useful
 Bundle 'davidoc/taskpaper.vim'
@@ -80,6 +82,7 @@ set laststatus=2  " show status line
 set number        " always show line numbers
 set hidden        " Allow un-saved buffers in background
 set clipboard=unnamed " Share system clipboard.
+set clipboard=unnamedplus " Share system clipboard.
 set backspace=indent,eol,start " Make backspace behave normally.
 set directory=/tmp// " swap files
 set backupskip=/tmp/*,/private/tmp/*
