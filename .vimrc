@@ -137,6 +137,11 @@ vnoremap / /\v
 """""""""""""""""""""""
 autocmd FileType * setlocal colorcolumn=80
 
+autocmd BufEnter * setlocal bufhidden=delete
+" autocmd BufReadPost fugitive://* set bufhidden=delete
+
+autocmd QuickFixCmdPost *grep* cwindow
+
 " Crontab auto-commands
 """""""""""""""""""""""
 autocmd FileType crontab setlocal backupcopy=yes
@@ -183,8 +188,8 @@ au BufNewFile,BufReadPost *.js setlocal shiftwidth=2 expandtab
 let mapleader = ","
 let g:mapleader = ","
 
-" Genral
-map <F4> :execute " grep -srnw --binary-files=without-match --exclude-dir={.git,node_modules,.svn} . -e " . expand("<cword>") . " " <bar> cwindow<CR>
+" Genral search
+nnoremap <silent> <F4> :Ggrep <cword><CR>
 
 " hide ^M line endings
 nnoremap <leader>ds :e ++ff=dos<cr>
