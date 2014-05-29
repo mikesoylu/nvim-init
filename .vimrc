@@ -46,7 +46,7 @@ Bundle 'skammer/vim-css-color'
 Bundle 'mgutz/vim-colors'
 Bundle 'tpope/vim-speeddating'
 Bundle 'Lokaltog/vim-powerline'
-Bundle 'chriskempson/base16-vim'
+Bundle 'lsdr/monokai'
 
 filetype plugin indent on     " required!
 
@@ -72,7 +72,7 @@ au VimResized * exe "normal! \<c-w>="
 if !has("gui_running")
     colorscheme chance-of-storm
 else
-    colorscheme base16-monokai
+    colorscheme monokai
 endif
 
 " Basic
@@ -190,6 +190,7 @@ let g:mapleader = ","
 
 " Genral search
 nnoremap <silent> <F4> :Ggrep <cword><CR>
+nnoremap <leader>g :Ggrep ''<Left>
 
 " hide ^M line endings
 nnoremap <leader>ds :e ++ff=dos<cr>
