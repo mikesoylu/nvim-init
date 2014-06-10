@@ -59,7 +59,7 @@ set background=dark
 if has("win32")
     set guifont=Consolas
 else
-    set guifont=Monospace
+    set guifont=Menlo:h13
 endif
 
 " AS3 syntax
@@ -150,14 +150,7 @@ autocmd FileType crontab setlocal backupcopy=yes
 " au BufNewFile,BufRead *.{md,mdown,mkd,mkdn,markdown,mdwn} call DistractionFreeWriting()
 
 function! DistractionFreeWriting()
-    colorscheme base16-solarized
-    if has("win32")
-        set guifont=Consolas:h12
-    else
-        set guifont=Monospace:h12
-    endif
     set background=light
-    set lines=60 columns=100           " size of the editable area
     set guioptions-=r                  " remove right scrollbar
     set noruler                        " don't show ruler
     set linebreak                      " break the lines on words
