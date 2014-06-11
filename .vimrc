@@ -41,10 +41,7 @@ Bundle 'digitaltoad/vim-jade'
 Bundle 'wavded/vim-stylus'
 
 " Fun, but not useful
-Bundle 'davidoc/taskpaper.vim'
 Bundle 'skammer/vim-css-color'
-Bundle 'mgutz/vim-colors'
-Bundle 'tpope/vim-speeddating'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'lsdr/monokai'
 
@@ -70,7 +67,7 @@ autocmd BufRead *.mxml set filetype=Javascript
 au VimResized * exe "normal! \<c-w>="
 
 if !has("gui_running")
-    colorscheme chance-of-storm
+    colorscheme elflord
 else
     colorscheme monokai
 endif
@@ -214,7 +211,7 @@ autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 " crtl-p
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(node_modules|git|hg|svn)$',
+  \ 'dir':  '\v[\/]\.(bower_components|node_modules|git|hg|svn)$',
   \ 'file': '\v\.(exe|o|out|so|dll|wmv|mov|mkv|pdf|jpg|gif|jpeg|png|mp4|zip|7z|tar|gz|bz2|rar|swc|swf|iso|msi|wav|bin|mp3|ttf)$',
   \ }
 let g:ctrlp_max_depth = 8
