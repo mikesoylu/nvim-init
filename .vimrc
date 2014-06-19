@@ -56,7 +56,7 @@ set background=dark
 if has("win32")
     set guifont=Consolas
 else
-    set guifont=Menlo:h13
+    set guifont=Menlo:h12
 endif
 
 " AS3 syntax
@@ -164,11 +164,11 @@ autocmd FileType html setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
 " Coffeescript configurations
 """""""""""""""""""""""""""""
 au BufNewFile,BufReadPost *.coffee setlocal foldmethod=indent
-au BufNewFile,BufReadPost *.coffee setlocal shiftwidth=2 expandtab
+au BufNewFile,BufReadPost *.coffee setlocal shiftwidth=4 expandtab
 
 " Javascript configurations
 """""""""""""""""""""""""""
-au BufNewFile,BufReadPost *.js setlocal shiftwidth=2 expandtab
+au BufNewFile,BufReadPost *.js setlocal shiftwidth=4 expandtab
 
 " Custom mappings
 """"""""""""""""""
@@ -178,7 +178,7 @@ let mapleader = ","
 let g:mapleader = ","
 
 " Genral search
-nnoremap <silent> <F4> :Ggrep <cword><CR>
+nnoremap <Leader>gg :Ggrep <cword><CR>
 nnoremap <leader>g :Ggrep ''<Left>
 
 " hide ^M line endings
@@ -214,8 +214,8 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(bower_components|node_modules|git|hg|svn)$',
   \ 'file': '\v\.(exe|o|out|so|dll|wmv|mov|mkv|pdf|jpg|gif|jpeg|png|mp4|zip|7z|tar|gz|bz2|rar|swc|swf|iso|msi|wav|bin|mp3|ttf)$',
   \ }
-let g:ctrlp_max_depth = 8
-let g:ctrlp_max_files = 512
+let g:ctrlp_max_depth = 10
+let g:ctrlp_max_files = 1000
 let g:ctrlp_show_hidden = 1
 let g:ctrlp_use_caching = 0
 
