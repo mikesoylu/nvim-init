@@ -29,6 +29,7 @@ Bundle 'terryma/vim-multiple-cursors'
 Bundle 'tpope/vim-dispatch'
 Bundle 'jmcantrell/vim-virtualenv'
 Bundle 'Shougo/neocomplcache.vim'
+Bundle 'tpope/vim-sensible'
 
 " Syntaxes and such.
 Bundle 'leafgarland/typescript-vim.git'
