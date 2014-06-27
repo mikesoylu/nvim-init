@@ -11,16 +11,16 @@ sweet spots.
 
 **NOTE**: If you have existing files in `$HOME/.vim` or `$HOME/.vimrc`, make sure you take appropriate backups before performing any of the following steps.
 
- - First install Vundle, as per their [instructions](https://github.com/gmarik/vundle):
-
-```sh
-$ git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
-```
-
- - Next, get my vim-dotfiles & symlink the `.vimrc` to your `$HOME/.vimrc`:
+ - First get my vim-dotfiles & symlink the `.vimrc` to your `$HOME/.vimrc`:
 
 ```sh
 $ git clone git@github.com:mikesoylu/vim-dotfiles.git ~/.vim && ln -s ~/.vim/.vimrc ~/.vimrc
+```
+
+ - Next, install Vundle, as per their [instructions](https://github.com/gmarik/vundle):
+
+```sh
+$ git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 ```
 
  - Finally, we need to launch Vim and then invoke the appropriate Vundle commands to install all of the bundles using the `:BundleInstall` command. When this is completed
@@ -33,6 +33,3 @@ The included `.vimrc` contains some very minimal configurations that should be s
 bundles. Feel free to modify at will, of course. See the comments in the `.vimrc` file for more details, and check out the individual bundles that are pulled in on github until
 I decide to annotate & comment on what each of them do.
 
-## Screenshot
-
-And here's a gratuitous screenshot: ![screenshot of vim colorscheme & some configs in action](http://f.cl.ly/items/1L2e0L3M2Y1D371J0o19/Image%202011.08.31%206:27:25%20PM.png "Screenshot")
