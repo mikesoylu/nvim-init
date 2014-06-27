@@ -157,9 +157,6 @@ endfunction
 
 :map <F8> :call DistractionFreeWriting()<CR>
 
-" Toggle spellcheck in normal mode
-:map <F5> :setlocal spell! spelllang=en_us<CR>
-
 " HTML configurations
 """""""""""""""""""""
 autocmd FileType html setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
@@ -179,6 +176,9 @@ au BufNewFile,BufReadPost *.js setlocal shiftwidth=4 expandtab
 " Change leader
 let mapleader = ","
 let g:mapleader = ","
+
+" Toggle spellcheck in normal mode
+nnoremap <leader>sc :setlocal spell! spelllang=en_us<CR>
 
 " Genral search
 nnoremap <Leader>gg :Ggrep -i <cword><CR>
