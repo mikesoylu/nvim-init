@@ -95,6 +95,8 @@ set undolevels=1000      " use many muchos levels of undo
 set title                " change the terminal's title
 set novisualbell           " don't beep
 set noerrorbells         " don't beep
+set spell spelllang=en_us " enable spell checking
+set shell=zsh
 
 " Remove the toolbar if we're running under a GUI (e.g. MacVIM).
 if has("gui_running")
@@ -178,7 +180,7 @@ let mapleader = ","
 let g:mapleader = ","
 
 " Genral search
-nnoremap <Leader>gg :Ggrep <cword><CR>
+nnoremap <Leader>gg :Ggrep -i <cword><CR>
 nnoremap <leader>g :Ggrep ''<Left>
 
 " hide ^M line endings
@@ -214,8 +216,8 @@ let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(bower_components|node_modules|git|hg|svn)$',
   \ 'file': '\v\.(exe|o|out|so|dll|wmv|mov|mkv|pdf|jpg|gif|jpeg|png|mp4|zip|7z|tar|gz|bz2|rar|swc|swf|iso|msi|wav|bin|mp3|ttf)$',
   \ }
-let g:ctrlp_max_depth = 10
-let g:ctrlp_max_files = 1000
+let g:ctrlp_max_depth = 16
+let g:ctrlp_max_files = 2048
 let g:ctrlp_show_hidden = 1
 let g:ctrlp_use_caching = 0
 
