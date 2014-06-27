@@ -23,9 +23,7 @@ $ git clone git@github.com:mikesoylu/vim-dotfiles.git ~/.vim && ln -s ~/.vim/.vi
 $ git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle
 ```
 
- - Finally, we need to launch Vim and then invoke the appropriate Vundle commands to install all of the bundles using the `:BundleInstall` command. When this is completed
-   you'll need to build the C extension for the [Command-T plugin](https://github.com/wincent/Command-T) plugin, which is a simple matter of cd'ing in to the command-t bundle
-   folder and invoking `rake make`. I'm not quite sure if this process could somehow be automated with Vundle; if not, then that would be a fun addition to make to the project.
+ - Finally, we need to launch Vim and then invoke the appropriate Vundle commands to install all of the bundles using the `:BundleInstall` command.
 
 And that's it! Be sure to source your newly installed configuration (`:source $MYVIMRC` from inside Vim, or just restart a new editor session), and you should be good to go.
 
