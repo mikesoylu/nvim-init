@@ -28,8 +28,9 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'terryma/vim-multiple-cursors'
 Bundle 'tpope/vim-dispatch'
 Bundle 'jmcantrell/vim-virtualenv'
-Bundle 'Shougo/neocomplcache.vim'
+Bundle 'Valloric/YouCompleteMe'
 Bundle 'tpope/vim-sensible'
+Bundle 'Lokaltog/vim-easymotion'
 
 " Syntaxes and such.
 Bundle 'leafgarland/typescript-vim.git'
@@ -40,6 +41,10 @@ Bundle 'groenewege/vim-less'
 Bundle 'othree/html5.vim'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'wavded/vim-stylus'
+Bundle 'tpope/vim-rails'
+Bundle 'tpope/vim-endwise'
+Bundle 'mattn/emmet-vim'
+Bundle 'marijnh/tern_for_vim'
 
 " Fun, but not useful
 Bundle 'skammer/vim-css-color'
@@ -75,6 +80,7 @@ endif
 
 " Basic
 syntax enable
+set relativenumber
 set grepprg=grep
 set laststatus=2  " show status line
 set number        " always show line numbers
@@ -97,7 +103,7 @@ set title                " change the terminal's title
 set novisualbell           " don't beep
 set noerrorbells         " don't beep
 set spell spelllang=en_us " enable spell checking
-set shell=zsh
+set shell=zsh\ -i
 
 " Remove the toolbar if we're running under a GUI (e.g. MacVIM).
 if has("gui_running")
@@ -161,14 +167,18 @@ endfunction
 """""""""""""""""""""
 autocmd FileType html setlocal shiftwidth=4 tabstop=4 softtabstop=4 expandtab
 
+" Ruby configurations
+"""""""""""""""""""""
+autocmd FileType ruby setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
+
 " Coffeescript configurations
 """""""""""""""""""""""""""""
 au BufNewFile,BufReadPost *.coffee setlocal foldmethod=indent
-au BufNewFile,BufReadPost *.coffee setlocal shiftwidth=4 expandtab
+au BufNewFile,BufReadPost *.coffee setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 
 " Javascript configurations
 """""""""""""""""""""""""""
-au BufNewFile,BufReadPost *.js setlocal shiftwidth=4 expandtab
+au BufNewFile,BufReadPost *.js setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 
 " Custom mappings
 """"""""""""""""""
@@ -182,7 +192,7 @@ nnoremap <leader>sc :setlocal spell! spelllang=en_us<CR>
 
 " Genral search
 nnoremap <Leader>gg :Ggrep -i <cword><CR>
-nnoremap <leader>g :Ggrep ''<Left>
+nnoremap <leader>g :Ggrep -i ''<Left>
 
 " hide ^M line endings
 nnoremap <leader>ds :e ++ff=dos<cr>
@@ -199,31 +209,26 @@ nnoremap <silent> <esc> :ccl<CR>
 " Plugin configurations
 """""""""""""""""""""""
 
-" Neocomplete
-let g:neocomplcache_enable_at_startup = 1
-let g:neocomplcache_enable_auto_select = 1
-inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-function! s:my_cr_function()
-    return pumvisible() ? neocomplcache#close_popup() : "\<CR>"
-endfunction
-
-autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
-autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-
 " crtl-p
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_custom_ignore = {
-  \ 'dir':  '\v[\/]\.(bower_components|node_modules|git|hg|svn)$',
+  \ 'dir':  '\v[\/](bower_components|node_modules|.git|.hg|.svn|.tmp)$',
   \ 'file': '\v\.(exe|o|out|so|dll|wmv|mov|mkv|pdf|jpg|gif|jpeg|png|mp4|zip|7z|tar|gz|bz2|rar|swc|swf|iso|msi|wav|bin|mp3|ttf)$',
   \ }
 let g:ctrlp_max_depth = 16
-let g:ctrlp_max_files = 2048
+let g:ctrlp_max_files = 0
 let g:ctrlp_show_hidden = 1
-let g:ctrlp_use_caching = 0
+let g:ctrlp_use_caching = 1
 
 " NERDTree
-nnoremap <Leader>f :NERDTreeToggle<CR>
+nnoremap <Leader>ff :NERDTreeFind<CR>
+nnoremap <Leader>f :NERDTree<CR>
+nnoremap <Leader>fc :NERDTreeToggle<CR>
+
+" EmmetVim
+imap ,hh <C-y>,
+nmap <Leader>hh <C-y>,
+vmap <Leader>hh <C-y>,
 
 " Double rainbow - What does it mean!?
 au VimEnter * RainbowParenthesesToggle
