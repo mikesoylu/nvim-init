@@ -36,6 +36,7 @@ Bundle 'Lokaltog/vim-easymotion'
 Bundle 'leafgarland/typescript-vim.git'
 Bundle 'leshill/vim-json'
 Bundle 'kchmck/vim-coffee-script'
+Bundle 'othree/coffee-check.vim'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'groenewege/vim-less'
 Bundle 'othree/html5.vim'
@@ -50,6 +51,10 @@ Bundle 'marijnh/tern_for_vim'
 Bundle 'skammer/vim-css-color'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'lsdr/monokai'
+Bundle 'mattn/webapi-vim'
+Bundle 'heavenshell/vim-slack'
+Bundle 'gavinbeatty/dragvisuals.vim'
+Bundle 'szw/vim-g.git'
 
 filetype plugin indent on     " required!
 
@@ -103,7 +108,9 @@ set title                " change the terminal's title
 set novisualbell           " don't beep
 set noerrorbells         " don't beep
 set spell spelllang=en_us " enable spell checking
-set shell=zsh\ -i
+if executable('zsh')
+  set shell=zsh\ -l
+endif
 
 " Remove the toolbar if we're running under a GUI (e.g. MacVIM).
 if has("gui_running")
@@ -137,6 +144,12 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 """""""""""""""""""""""""""
 nnoremap / /\v
 vnoremap / /\v
+
+" NO SHIFT PLEASE
+nnoremap ; :
+nnoremap : ;
+vnoremap ; :
+vnoremap : ;
 
 " General auto-commands
 """""""""""""""""""""""
@@ -173,7 +186,7 @@ autocmd FileType ruby setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 
 " Coffeescript configurations
 """""""""""""""""""""""""""""
-au BufNewFile,BufReadPost *.coffee setlocal foldmethod=indent
+au BufNewFile,BufReadPost *.coffee setlocal foldmethod=indent nofoldenable
 au BufNewFile,BufReadPost *.coffee setlocal shiftwidth=2 tabstop=2 softtabstop=2 expandtab
 
 " Javascript configurations
@@ -194,6 +207,15 @@ nnoremap <leader>sc :setlocal spell! spelllang=en_us<CR>
 nnoremap <Leader>gg :Ggrep -i <cword><CR>
 nnoremap <leader>g :Ggrep -i ''<Left>
 
+" Toggle folds (<Space>)
+nnoremap <silent> <space> :exe 'silent! normal! '.((foldclosed('.')>0)? 'zMzx' : 'zc')<CR>
+
+" Restore cursor position
+autocmd BufReadPost *
+  \ if line("'\"") > 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
+
 " hide ^M line endings
 nnoremap <leader>ds :e ++ff=dos<cr>
 
@@ -206,8 +228,32 @@ cmap w!! w !sudo tee % >/dev/null
 " quickfix close
 nnoremap <silent> <esc> :ccl<CR>
 
+" Chrome-like tabs for MacVIM
+nnoremap <D-1> 1gt
+nnoremap <D-2> 2gt
+nnoremap <D-3> 3gt
+nnoremap <D-4> 4gt
+nnoremap <D-5> 5gt
+nnoremap <D-6> 6gt
+nnoremap <D-7> 7gt
+nnoremap <D-8> 8gt
+nnoremap <D-9> 9gt
+nnoremap <D-0> 10gt
+inoremap <D-1> <esc> 1gt<CR>
+inoremap <D-2> <esc> 2gt<CR>
+inoremap <D-3> <esc> 3gt<CR>
+inoremap <D-4> <esc> 4gt<CR>
+inoremap <D-5> <esc> 5gt<CR>
+inoremap <D-6> <esc> 6gt<CR>
+inoremap <D-7> <esc> 7gt<CR>
+inoremap <D-8> <esc> 8gt<CR>
+inoremap <D-9> <esc> 9gt<CR>
+inoremap <D-0> <esc> 10gt<CR>
+
 " Plugin configurations
 """""""""""""""""""""""
+" coffee check
+let g:coffeeCheckHighlightErrorLine = 1
 
 " crtl-p
 let g:ctrlp_map = '<c-p>'
@@ -225,13 +271,28 @@ nnoremap <Leader>ff :NERDTreeFind<CR>
 nnoremap <Leader>f :NERDTree<CR>
 nnoremap <Leader>fc :NERDTreeToggle<CR>
 
+" Slack
+let g:slack_default_token = 'https://hooks.slack.com/services/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'
+let g:slack_channels = {'pisano': '#pisano'}
+nnoremap <Leader>sl :Slack -channel=pisano -text=""<Left>
+
 " EmmetVim
 imap ,hh <C-y>,
 nmap <Leader>hh <C-y>,
 vmap <Leader>hh <C-y>,
+
+" Drag Visuals
+vmap  <expr>  <LEFT>   DVB_Drag('left')
+vmap  <expr>  <RIGHT>  DVB_Drag('right')
+vmap  <expr>  <DOWN>   DVB_Drag('down')
+vmap  <expr>  <UP>     DVB_Drag('up')
+vmap  <expr>  D        DVB_Duplicate()
 
 " Double rainbow - What does it mean!?
 au VimEnter * RainbowParenthesesToggle
 au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
+
+" Google
+let g:vim_g_command = "Go"
