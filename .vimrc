@@ -1,3 +1,4 @@
+set rtp+=~/.fzf
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
@@ -16,7 +17,11 @@ Bundle 'kien/rainbow_parentheses.vim'
 Bundle 'ZoomWin'
 Bundle 'tComment'
 Bundle 'jmcantrell/vim-virtualenv'
-Bundle 'soramugi/auto-ctags.vim'
+Bundle 'Lokaltog/vim-powerline'
+Bundle 'mattn/emmet-vim'
+Bundle 'tpope/vim-rails'
+Bundle 'vim-scripts/matchit.zip'
+Bundle 'christoomey/vim-tmux-navigator'
 
 " Syntaxes and such.
 Bundle 'leafgarland/typescript-vim.git'
@@ -24,38 +29,17 @@ Bundle 'leshill/vim-json'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'plasticboy/vim-markdown'
 Bundle 'groenewege/vim-less'
-Bundle 'othree/html5.vim'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'wavded/vim-stylus'
-Bundle 'tpope/vim-rails'
-Bundle 'mattn/emmet-vim'
 Bundle 'skammer/vim-css-color'
-Bundle 'Lokaltog/vim-powerline'
-Bundle 'lsdr/monokai'
-Bundle 'nathanaelkane/vim-indent-guides'
-
-" OS - ENV specific stuff
-""""""""""""""""
-if has("win32")
-    set guifont=Consolas
-else
-    set guifont=Menlo:h12
-endif
-
-if !has("gui_running")
-    colorscheme elflord
-else
-    set guioptions=-t
-    colorscheme monokai
-endif
-
-if executable('zsh')
-  set shell=zsh\ -l
-endif
+Bundle 'tomasr/molokai'
+Bundle 'mxw/vim-jsx'
 
 " Basic
 syntax on
-filetype plugin indent on     " required!
+filetype plugin indent on
+
+colorscheme molokai
 
 set background=dark
 set encoding=utf-8
@@ -84,9 +68,6 @@ set title
 set novisualbell
 set noerrorbells
 set scrolloff=4
-set tabstop=4
-set shiftwidth=4
-set softtabstop=4
 set expandtab
 set shiftround
 set smarttab
@@ -95,6 +76,10 @@ set copyindent
 set foldmethod=indent
 set foldlevel=99
 set complete=.,w,b,u,t,i,k
+set lazyredraw
+set ttyfast
+set list
+set listchars=tab:▸\ ,trail:•
 
 " Highlight VCS conflict markers
 """"""""""""""""""""""""""""""""
@@ -104,12 +89,6 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 """""""""""""""""""""""""""
 nnoremap / /\v
 vnoremap / /\v
-
-" NO SHIFT PLEASE
-nnoremap ; :
-nnoremap : ;
-vnoremap ; :
-vnoremap : ;
 
 " General auto-commands
 """""""""""""""""""""""
@@ -129,7 +108,6 @@ noremap  <Up> <Nop>
 noremap  <Down> <Nop>
 noremap  <Left> <Nop>
 noremap  <Right> <Nop>
-inoremap <esc> <nop>
 
 " File-relative commads
 cabbr <expr> %% expand('%:p:h')
@@ -179,16 +157,5 @@ au Syntax * RainbowParenthesesLoadRound
 au Syntax * RainbowParenthesesLoadSquare
 au Syntax * RainbowParenthesesLoadBraces
 
-" Indent guides
-let g:indent_guides_enable_on_vim_startup = 1
-let g:indent_guides_exclude_filetypes = ['help']
-let g:indent_guides_guide_size = 1
-let g:indent_guides_start_level = 2
-let g:indent_guides_color_change_percent = 5
-
-" Ctags
-let g:auto_ctags = 1
-let g:auto_ctags_directory_list = ['.git', '.svn']
-let g:auto_ctags_filetype_mode = 1
-let g:auto_ctags_filetype_mode = 1
-let g:auto_ctags_tags_name = '.tags'
+" Fuzzy finder
+nnoremap <Leader>t :FZF<CR>
