@@ -13,13 +13,10 @@ Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-sleuth'
 Bundle 'tpope/vim-endwise'
 Bundle 'bronson/vim-trailing-whitespace'
-Bundle 'kien/rainbow_parentheses.vim'
-Bundle 'ZoomWin'
 Bundle 'tComment'
 Bundle 'jmcantrell/vim-virtualenv'
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'mattn/emmet-vim'
-Bundle 'tpope/vim-rails'
 Bundle 'vim-scripts/matchit.zip'
 Bundle 'christoomey/vim-tmux-navigator'
 
@@ -31,7 +28,6 @@ Bundle 'plasticboy/vim-markdown'
 Bundle 'groenewege/vim-less'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'wavded/vim-stylus'
-Bundle 'skammer/vim-css-color'
 Bundle 'tomasr/molokai'
 Bundle 'mxw/vim-jsx'
 
@@ -44,9 +40,6 @@ colorscheme molokai
 set background=dark
 set encoding=utf-8
 set nocompatible
-set relativenumber
-set cursorcolumn
-set cursorline
 set grepprg=grep
 set laststatus=2
 set number
@@ -68,13 +61,16 @@ set title
 set novisualbell
 set noerrorbells
 set scrolloff=4
+set scroll=10
 set expandtab
 set shiftround
 set smarttab
 set autoindent
 set copyindent
-set foldmethod=indent
+set foldmethod=manual
 set foldlevel=99
+set foldcolumn=1
+set sessionoptions+=folds
 set complete=.,w,b,u,t,i,k
 set lazyredraw
 set ttyfast
@@ -92,11 +88,23 @@ vnoremap / /\v
 
 " General auto-commands
 """""""""""""""""""""""
-autocmd FileType * setlocal colorcolumn=80
+" show column 80 marker
+au FileType * setlocal colorcolumn=80
 
-autocmd BufEnter * setlocal bufhidden=delete
+" Delete unused buffers
+au BufEnter * setlocal bufhidden=delete
 
-autocmd QuickFixCmdPost *grep* cwindow
+au QuickFixCmdPost *grep* cwindow
+
+" Restore folds
+au BufWinLeave ?* mkview
+au BufWinEnter ?* silent loadview
+
+" Restore cursor position
+au BufReadPost *
+  \ if line("'\"") > 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
 
 " Resize splits when the window is resized
 au VimResized * exe "normal! \<c-w>="
@@ -120,12 +128,6 @@ let g:mapleader = ","
 nnoremap <Leader>gg :Ggrep -i <cword><CR>
 nnoremap <leader>g :Ggrep -i ''<Left>
 
-" Restore cursor position
-autocmd BufReadPost *
-  \ if line("'\"") > 1 && line("'\"") <= line("$") |
-  \   exe "normal! g`\"" |
-  \ endif
-
 " Get rid of search hilighting with ,/
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
@@ -134,6 +136,21 @@ cmap w!! w !sudo tee % >/dev/null
 
 " quickfix close
 nnoremap <silent> <C-c> :ccl<CR>
+
+" Bang!
+noremap Q !!$SHELL<CR>
+
+" Search for selected text, forwards or backwards.
+vnoremap <silent> * :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy/<C-R><C-R>=substitute(
+  \escape(@", '/\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
+vnoremap <silent> # :<C-U>
+  \let old_reg=getreg('"')<Bar>let old_regtype=getregtype('"')<CR>
+  \gvy?<C-R><C-R>=substitute(
+  \escape(@", '?\.*$^~['), '\_s\+', '\\_s\\+', 'g')<CR><CR>
+  \gV:call setreg('"', old_reg, old_regtype)<CR>
 
 " Plugin configurations
 """""""""""""""""""""""
@@ -150,12 +167,6 @@ nnoremap <Leader>fc :NERDTreeToggle<CR>
 imap ,hh <C-y>,
 nmap <Leader>hh <C-y>,
 vmap <Leader>hh <C-y>,
-
-" Double rainbow - What does it mean!?
-au VimEnter * RainbowParenthesesToggle
-au Syntax * RainbowParenthesesLoadRound
-au Syntax * RainbowParenthesesLoadSquare
-au Syntax * RainbowParenthesesLoadBraces
 
 " Fuzzy finder
 nnoremap <Leader>t :FZF<CR>
