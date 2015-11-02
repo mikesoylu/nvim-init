@@ -14,7 +14,6 @@ Bundle 'tpope/vim-endwise'
 Bundle 'bronson/vim-trailing-whitespace'
 Bundle 'tComment'
 Bundle 'jmcantrell/vim-virtualenv'
-Bundle 'bling/vim-airline'
 Bundle 'mattn/emmet-vim'
 Bundle 'vim-scripts/matchit.zip'
 Bundle 'simnalamburt/vim-mundo'
@@ -46,6 +45,7 @@ set encoding=utf-8
 set nocompatible
 set grepprg=grep
 set laststatus=2
+set statusline=%m%t\ b%n\ %r%y%q%=%c\ (%P)
 set number
 set hidden
 set clipboard=unnamed
@@ -167,11 +167,6 @@ imap ,hh <C-y>,
 nmap <Leader>hh <C-y>,
 vmap <Leader>hh <C-y>,
 
-" Statusline colorscheme
-let g:airline_theme='PaperColor'
-let g:airline_left_sep=''
-let g:airline_right_sep=''
-
 " FZF line search
 function! s:line_handler(l)
   let keys = split(a:l, ':\t')
@@ -199,6 +194,11 @@ command! FZFLines call fzf#run({
 
 " Other customizations
 """"""""""""""""""""""
+
+" Statusline mode colors
+highlight statusLine cterm=bold ctermfg=white ctermbg=red
+au InsertLeave * highlight StatusLine cterm=bold ctermfg=white ctermbg=red
+au InsertEnter * highlight StatusLine cterm=bold ctermfg=black ctermbg=white
 
 " Delete all hidden buffers
 fu! DeleteHiddenBuffers()
