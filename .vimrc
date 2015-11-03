@@ -11,6 +11,7 @@ Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-repeat'
 Bundle 'tpope/vim-sleuth'
 Bundle 'tpope/vim-endwise'
+Bundle 'tpope/vim-rsi'
 Bundle 'bronson/vim-trailing-whitespace'
 Bundle 'tComment'
 Bundle 'jmcantrell/vim-virtualenv'
@@ -45,7 +46,7 @@ set encoding=utf-8
 set nocompatible
 set grepprg=grep
 set laststatus=2
-set statusline=%m%t\ b%n\ %r%y%q%=%c\ (%P)
+set statusline=\ %m%t\ %r%y%q\ b%n:%{join(filter(range(1,bufnr('$')),'buflisted(v:val)'),',')}%=@%{fugitive#head(8)}\ %c\ (%P)\ 
 set number
 set hidden
 set clipboard=unnamed
@@ -85,7 +86,7 @@ set undodir=~/.vim_history
 set path=**
 set wildmode=full
 set wildmenu
-set suffixesadd=.coffee,.js,.rb,.java
+set suffixesadd=.coffee,.js,.rb,.java,.html
 set wildignore=*/bin/*,*/node_modules/*,*/dist/*,*/bower_components/*
 
 " I CAN HAZ NORMAL REGEXES?
@@ -141,7 +142,7 @@ nnoremap <leader>g :Ggrep -i ''<Left>
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
 " Exptand tabs
-nnoremap <silent> <leader>rt :set et|retab<CR>
+nnoremap <silent> <leader>rt :set\ et|retab<CR>
 
 " Fix those pesky situations where you edit & need sudo to save
 cmap w!! w !sudo tee % >/dev/null
@@ -195,10 +196,47 @@ command! FZFLines call fzf#run({
 " Other customizations
 """"""""""""""""""""""
 
-" Statusline mode colors
-highlight statusLine cterm=bold ctermfg=white ctermbg=red
-au InsertLeave * highlight StatusLine cterm=bold ctermfg=white ctermbg=red
-au InsertEnter * highlight StatusLine cterm=bold ctermfg=black ctermbg=white
+" Colorize statusline in insert and visual modes
+function! SetStatusLineColorInsert(mode)
+  " Insert mode: white
+  if a:mode == "i"
+    hi StatusLine cterm=bold ctermfg=236 ctermbg=white
+
+  " Replace mode: red
+  elseif a:mode == "r"
+    hi StatusLine cterm=bold ctermfg=white ctermbg=161
+
+  endif
+endfunction
+
+function! SetStatusLineColorVisual()
+  set updatetime=0
+
+  " Visual mode: orange
+  hi StatusLine cterm=bold ctermfg=white ctermbg=166
+
+  " don't goto char when entering visual mode
+  return ''
+endfunction
+
+function! ResetStatusLineColor()
+  set updatetime=4000
+
+  " Normal mode: blue
+  hi StatusLine cterm=bold ctermfg=white ctermbg=24
+endfunction
+
+vnoremap <silent> <expr> <SID>SetStatusLineColorVisual SetStatusLineColorVisual()
+nnoremap <silent> <script> v v<SID>SetStatusLineColorVisual
+nnoremap <silent> <script> V V<SID>SetStatusLineColorVisual
+nnoremap <silent> <script> <C-v> <C-v><SID>SetStatusLineColorVisual
+
+augroup StatusLineColorSwap
+    autocmd!
+    autocmd InsertEnter * call SetStatusLineColorInsert(v:insertmode)
+    autocmd InsertLeave * call ResetStatusLineColor()
+    autocmd CursorHold * call ResetStatusLineColor()
+augroup END
 
 " Delete all hidden buffers
 fu! DeleteHiddenBuffers()
@@ -240,6 +278,22 @@ set foldtext=CustomFoldText()
 if has('nvim')
   " Escape terminal mode
   tnoremap <Esc> <C-\><C-n>
+
+  " Statusline reset
+  function! ResetTerminalStatusLineColor()
+    if mode() ==# "t"
+      " Terminal mode: white
+      hi StatusLine cterm=bold ctermfg=236 ctermbg=white
+
+    elseif mode() ==# "n"
+      " Normal mode: blue
+      hi StatusLine cterm=bold ctermfg=white ctermbg=24
+    endif
+
+    return ""
+  endfunction
+
+  let &stl.='%{ResetTerminalStatusLineColor()}'
 
   " Open terminal in login shell
   command! T execute "e term://zsh\\ -l"
