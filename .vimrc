@@ -18,6 +18,7 @@ Bundle 'jmcantrell/vim-virtualenv'
 Bundle 'mattn/emmet-vim'
 Bundle 'vim-scripts/matchit.zip'
 Bundle 'simnalamburt/vim-mundo'
+Bundle 'bling/vim-bufferline'
 
 " Syntaxes and such.
 Bundle 'leafgarland/typescript-vim.git'
@@ -46,7 +47,7 @@ set encoding=utf-8
 set nocompatible
 set grepprg=grep
 set laststatus=2
-set statusline=\ %m%t\ %r%y%q\ b%n:%{join(filter(range(1,bufnr('$')),'buflisted(v:val)'),',')}%=@%{fugitive#head(8)}\ %c\ (%P)\ 
+set statusline=\ %m%t\ %r%y%q%=@%{fugitive#head(8)}\ %c\ (%P)\ 
 set number
 set hidden
 set clipboard=unnamed
@@ -80,6 +81,7 @@ set noswapfile
 set noshowmode
 set undofile
 set undodir=~/.vim_history
+set updatetime=1000
 
 " File Navigation
 """"""""""""""""""""""""""""""""
@@ -142,7 +144,7 @@ nnoremap <leader>g :Ggrep -i ''<Left>
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
 " Exptand tabs
-nnoremap <silent> <leader>rt :set\ et|retab<CR>
+nnoremap <silent> <leader>rt :set et<CR>retab<CR>
 
 " Fix those pesky situations where you edit & need sudo to save
 cmap w!! w !sudo tee % >/dev/null
@@ -220,7 +222,7 @@ function! SetStatusLineColorVisual()
 endfunction
 
 function! ResetStatusLineColor()
-  set updatetime=4000
+  set updatetime=1000
 
   " Normal mode: blue
   hi StatusLine cterm=bold ctermfg=white ctermbg=24
