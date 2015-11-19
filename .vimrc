@@ -8,20 +8,15 @@ Bundle 'gmarik/vundle'
 
 " System
 Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-repeat'
-Bundle 'tpope/vim-sleuth'
-Bundle 'tpope/vim-endwise'
 Bundle 'tpope/vim-rsi'
 Bundle 'bronson/vim-trailing-whitespace'
 Bundle 'tComment'
-Bundle 'jmcantrell/vim-virtualenv'
 Bundle 'mattn/emmet-vim'
 Bundle 'vim-scripts/matchit.zip'
-Bundle 'simnalamburt/vim-mundo'
 Bundle 'bling/vim-bufferline'
+Bundle 'rhysd/conflict-marker.vim'
 
-" Syntaxes and such.
-Bundle 'leafgarland/typescript-vim.git'
+" Syntaxes
 Bundle 'leshill/vim-json'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'plasticboy/vim-markdown'
@@ -29,7 +24,6 @@ Bundle 'groenewege/vim-less'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'wavded/vim-stylus'
 Bundle 'mxw/vim-jsx'
-Bundle 'rhysd/conflict-marker.vim'
 
 " Colorscheme
 Bundle 'NLKNguyen/papercolor-theme'
@@ -42,9 +36,9 @@ filetype plugin indent on
 colorscheme PaperColor
 set background=light
 
-set showcmd
-set encoding=utf-8
 set nocompatible
+set showcmd
+set noshowmode
 set grepprg=grep
 set laststatus=2
 set statusline=\ %m%t\ %r%y%q%=@%{fugitive#head(8)}\ %c\ (%P)\ 
@@ -54,34 +48,37 @@ set clipboard=unnamed
 set backspace=indent,eol,start
 set ffs=unix,dos,mac
 set nowrap
+set mouse=a
+set nobackup
+set noswapfile
+set undofile
+set undodir=~/.vim_history
+set updatetime=1000
+set autoread
+
 set showmatch
 set ignorecase
 set smartcase
 set hlsearch
 set incsearch
-set history=1000
-set undolevels=1000
+
 set title
 set novisualbell
 set noerrorbells
+
 set tabstop=2
+set shiftwidth=2
 set expandtab
 set shiftround
 set smarttab
 set autoindent
 set copyindent
+
 set foldlevel=99
 set foldignore=
-set lazyredraw
+
 set list
 set listchars=tab:▸\ ,trail:•
-set mouse=a
-set nobackup
-set noswapfile
-set noshowmode
-set undofile
-set undodir=~/.vim_history
-set updatetime=1000
 
 " File Navigation
 """"""""""""""""""""""""""""""""
@@ -91,18 +88,10 @@ set wildmenu
 set suffixesadd=.coffee,.js,.rb,.java,.html
 set wildignore=*/bin/*,*/node_modules/*,*/dist/*,*/bower_components/*
 
-" I CAN HAZ NORMAL REGEXES?
-"""""""""""""""""""""""""""
-nnoremap / /\v
-vnoremap / /\v
-
 " General auto-commands
 """""""""""""""""""""""
 " show column 80 marker
 au FileType * setlocal colorcolumn=80
-
-" Delete unused buffers
-" au BufEnter * setlocal bufhidden=delete
 
 au QuickFixCmdPost *grep* cwindow
 
@@ -123,6 +112,11 @@ augroup END
 
 " Custom mappings
 """"""""""""""""""
+
+" I CAN HAZ NORMAL REGEXES?
+nnoremap / /\v
+vnoremap / /\v
+
 " enforce purity
 noremap  <Up> <Nop>
 noremap  <Down> <Nop>
@@ -143,9 +137,6 @@ nnoremap <leader>g :Ggrep -i ''<Left>
 " Get rid of search hilighting with ,/
 nnoremap <silent> <leader>/ :nohlsearch<CR>
 
-" Exptand tabs
-nnoremap <silent> <leader>rt :set et<CR>retab<CR>
-
 " Fix those pesky situations where you edit & need sudo to save
 cmap w!! w !sudo tee % >/dev/null
 
@@ -158,15 +149,12 @@ autocmd BufReadPost fugitive://* set bufhidden=delete
 " FZF
 nnoremap <silent> <leader>t :FZF<CR>
 nnoremap <silent> <leader>f :FZFLines<CR>
-
-" gundo
-nnoremap <silent> <leader>u :GundoToggle<CR>
+nnoremap <silent> <leader>b :FZFBuffers<CR>
 
 " markdown
 let g:vim_markdown_folding_disabled=1
 
 " EmmetVim
-imap ,hh <C-y>,
 nmap <Leader>hh <C-y>,
 vmap <Leader>hh <C-y>,
 
@@ -194,6 +182,24 @@ command! FZFLines call fzf#run({
 \   'options': '--extended --nth=3..',
 \   'down':    '60%'
 \})
+
+function! s:buflist()
+  redir => ls
+  silent ls
+  redir END
+  return split(ls, '\n')
+endfunction
+
+function! s:bufopen(e)
+  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
+endfunction
+
+command! FZFBuffers call fzf#run({
+\   'source':  reverse(<sid>buflist()),
+\   'sink':    function('<sid>bufopen'),
+\   'options': '+m',
+\   'down':    len(<sid>buflist()) + 2
+\ })
 
 " Other customizations
 """"""""""""""""""""""
