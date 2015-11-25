@@ -1,5 +1,4 @@
 set rtp+=~/.vim/bundle/vundle/
-set rtp+=~/.fzf
 
 call vundle#rc()
 
@@ -49,14 +48,6 @@ set suffixesadd=.rb,.java
 set wildignore=*/bin/*,*/node_modules/*,*/dist/*,*/bower_components/*
 set wildignorecase
 
-" General auto-commands
-"""""""""""""""""""""""
-
-" show column 80 marker
-au FileType * setlocal colorcolumn=80
-
-au QuickFixCmdPost *grep* cwindow
-
 " Custom mappings
 """"""""""""""""""
 
@@ -83,9 +74,11 @@ cmap w!! w !sudo tee % >/dev/null
 
 " Plugin configurations
 """""""""""""""""""""""
+" Auto open grep in quickfix
+au QuickFixCmdPost *grep* cwindow
 
 " Delete hidden fugitive buffers
-autocmd BufReadPost fugitive://* set bufhidden=delete
+au BufReadPost fugitive://* set bufhidden=delete
 
 " markdown
 let g:vim_markdown_folding_disabled=1
