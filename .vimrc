@@ -8,13 +8,6 @@ Bundle 'gmarik/vundle'
 
 " System
 Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-rsi'
-Bundle 'bronson/vim-trailing-whitespace'
-Bundle 'tComment'
-Bundle 'mattn/emmet-vim'
-Bundle 'vim-scripts/matchit.zip'
-Bundle 'bling/vim-bufferline'
-Bundle 'rhysd/conflict-marker.vim'
 
 " Syntaxes
 Bundle 'leshill/vim-json'
@@ -28,114 +21,62 @@ Bundle 'mxw/vim-jsx'
 " Colorscheme
 Bundle 'NLKNguyen/papercolor-theme'
 
-" Basic
-syntax on
-filetype plugin indent on
-
-" Colorscheme
 colorscheme PaperColor
 set background=light
 
-set nocompatible
-set showcmd
-set noshowmode
-set grepprg=grep
-set laststatus=2
-set statusline=\ %m%t\ %r%y%q%=@%{fugitive#head(8)}\ %c\ (%P)\ 
-set number
+" Basic config
+syntax on
+filetype plugin on
+
+set statusline=\ %m%t\ %r%y%q%=@%{fugitive#head(8)}\ %c,%l\ (%P)\ 
 set hidden
 set clipboard=unnamed
-set backspace=indent,eol,start
-set ffs=unix,dos,mac
 set nowrap
-set mouse=a
-set nobackup
-set noswapfile
-set undofile
-set undodir=~/.vim_history
-set updatetime=1000
-set autoread
 
-set showmatch
 set ignorecase
 set smartcase
-set hlsearch
-set incsearch
-
-set title
-set novisualbell
-set noerrorbells
 
 set tabstop=2
 set shiftwidth=2
 set expandtab
-set shiftround
-set smarttab
-set autoindent
-set copyindent
 
-set foldlevel=99
 set foldignore=
 
 set list
-set listchars=tab:▸\ ,trail:•
 
-" File Navigation
-""""""""""""""""""""""""""""""""
-set path=**
-set wildmode=full
-set wildmenu
-set suffixesadd=.coffee,.js,.rb,.java,.html
+set path=.,,**
+set suffixesadd=.rb,.java
 set wildignore=*/bin/*,*/node_modules/*,*/dist/*,*/bower_components/*
+set wildignorecase
 
 " General auto-commands
 """""""""""""""""""""""
+
 " show column 80 marker
 au FileType * setlocal colorcolumn=80
 
 au QuickFixCmdPost *grep* cwindow
 
-" Restore cursor position
-au BufReadPost *
-  \ if line("'\"") > 1 && line("'\"") <= line("$") |
-  \   exe "normal! g`\"" |
-  \ endif
-
-" Resize splits when the window is resized
-au VimResized * exe "normal! \<c-w>="
-
-" Allow manual folds
-augroup vimrc
-  au BufReadPre * setlocal foldmethod=indent
-  au BufWinEnter * if &fdm == 'indent' | setlocal foldmethod=manual | endif
-augroup END
-
 " Custom mappings
 """"""""""""""""""
 
-" I CAN HAZ NORMAL REGEXES?
-nnoremap / /\v
-vnoremap / /\v
-
-" enforce purity
-noremap  <Up> <Nop>
-noremap  <Down> <Nop>
-noremap  <Left> <Nop>
-noremap  <Right> <Nop>
+" Escape terminal mode
+tnoremap <Esc> <C-\><C-n>
+tnoremap <D-v> <C-\><C-n>pi
 
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
 
+" Open terminal in login shell
+cabbr <expr> term "term://zsh\\ -l"
+
 " Change leader
-let mapleader = ","
-let g:mapleader = ","
+let mapleader = " "
+let g:mapleader = " "
 
 " General search
 nnoremap <Leader>gg :Ggrep -i <cword><CR>
-nnoremap <leader>g :Ggrep -i ''<Left>
-
-" Get rid of search hilighting with ,/
-nnoremap <silent> <leader>/ :nohlsearch<CR>
+nnoremap <Leader>g :Ggrep -i ''<Left>
 
 " Fix those pesky situations where you edit & need sudo to save
 cmap w!! w !sudo tee % >/dev/null
@@ -146,105 +87,11 @@ cmap w!! w !sudo tee % >/dev/null
 " Delete hidden fugitive buffers
 autocmd BufReadPost fugitive://* set bufhidden=delete
 
-" FZF
-nnoremap <silent> <leader>t :FZF<CR>
-nnoremap <silent> <leader>f :FZFLines<CR>
-nnoremap <silent> <leader>b :FZFBuffers<CR>
-
 " markdown
 let g:vim_markdown_folding_disabled=1
 
-" EmmetVim
-nmap <Leader>hh <C-y>,
-vmap <Leader>hh <C-y>,
-
-" FZF line search
-function! s:line_handler(l)
-  let keys = split(a:l, ':\t')
-  exec 'buf' keys[0]
-  exec keys[1]
-  normal! ^zz
-endfunction
-
-function! s:buffer_lines()
-  let res = []
-  for b in filter(range(1, bufnr('$')), 'buflisted(v:val)')
-    if (matchstr(bufname(b), "^term:") != "term:")
-      call extend(res, map(getbufline(b,0,"$"), 'b . ":\t" . (v:key + 1) . ":\t" . v:val '))
-    endif
-  endfor
-  return res
-endfunction
-
-command! FZFLines call fzf#run({
-\   'source':  <sid>buffer_lines(),
-\   'sink':    function('<sid>line_handler'),
-\   'options': '--extended --nth=3..',
-\   'down':    '60%'
-\})
-
-function! s:buflist()
-  redir => ls
-  silent ls
-  redir END
-  return split(ls, '\n')
-endfunction
-
-function! s:bufopen(e)
-  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
-endfunction
-
-command! FZFBuffers call fzf#run({
-\   'source':  reverse(<sid>buflist()),
-\   'sink':    function('<sid>bufopen'),
-\   'options': '+m',
-\   'down':    len(<sid>buflist()) + 2
-\ })
-
-" Other customizations
-""""""""""""""""""""""
-
-" Colorize statusline in insert and visual modes
-function! SetStatusLineColorInsert(mode)
-  " Insert mode: white
-  if a:mode == "i"
-    hi StatusLine cterm=bold ctermfg=236 ctermbg=white
-
-  " Replace mode: red
-  elseif a:mode == "r"
-    hi StatusLine cterm=bold ctermfg=white ctermbg=161
-
-  endif
-endfunction
-
-function! SetStatusLineColorVisual()
-  set updatetime=0
-
-  " Visual mode: orange
-  hi StatusLine cterm=bold ctermfg=white ctermbg=166
-
-  " don't goto char when entering visual mode
-  return ''
-endfunction
-
-function! ResetStatusLineColor()
-  set updatetime=1000
-
-  " Normal mode: blue
-  hi StatusLine cterm=bold ctermfg=white ctermbg=24
-endfunction
-
-vnoremap <silent> <expr> <SID>SetStatusLineColorVisual SetStatusLineColorVisual()
-nnoremap <silent> <script> v v<SID>SetStatusLineColorVisual
-nnoremap <silent> <script> V V<SID>SetStatusLineColorVisual
-nnoremap <silent> <script> <C-v> <C-v><SID>SetStatusLineColorVisual
-
-augroup StatusLineColorSwap
-    autocmd!
-    autocmd InsertEnter * call SetStatusLineColorInsert(v:insertmode)
-    autocmd InsertLeave * call ResetStatusLineColor()
-    autocmd CursorHold * call ResetStatusLineColor()
-augroup END
+" Custom commands
+"""""""""""""""""""""""
 
 " Delete all hidden buffers
 fu! DeleteHiddenBuffers()
@@ -280,29 +127,5 @@ fu! CustomFoldText()
   let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr.foldPercentage))
   return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
 endf
+
 set foldtext=CustomFoldText()
-
-" NeoVim Configs
-if has('nvim')
-  " Escape terminal mode
-  tnoremap <Esc> <C-\><C-n>
-
-  " Statusline reset
-  function! ResetTerminalStatusLineColor()
-    if mode() ==# "t"
-      " Terminal mode: white
-      hi StatusLine cterm=bold ctermfg=236 ctermbg=white
-
-    elseif mode() ==# "n"
-      " Normal mode: blue
-      hi StatusLine cterm=bold ctermfg=white ctermbg=24
-    endif
-
-    return ""
-  endfunction
-
-  let &stl.='%{ResetTerminalStatusLineColor()}'
-
-  " Open terminal in login shell
-  command! T execute "e term://zsh\\ -l"
-endif
