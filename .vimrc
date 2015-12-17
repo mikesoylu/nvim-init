@@ -3,7 +3,9 @@ set rtp+=~/.fzf
 
 call vundle#rc()
 
-" let Vundle manage Vundle
+" General Setup
+"""""""""""""""
+" Vundle
 Bundle 'gmarik/vundle'
 
 " System
@@ -34,7 +36,14 @@ set nowrap
 set foldignore=
 set list
 set ruler
+set cursorline
+
+set nobackup
+set nowritebackup
 set noswapfile
+
+set splitbelow
+set splitright
 
 set ignorecase
 set smartcase
@@ -43,16 +52,20 @@ set tabstop=2
 set shiftwidth=2
 set expandtab
 
-set wildignorecase
 
 " Custom mappings
 """""""""""""""""
 " Map leader to space
 let mapleader=" "
 
-" Terminal mode
+" Visually search by yanking selected text
+vnoremap * y/<C-R>"<CR>
+vnoremap # y?<C-R>"<CR>
+
+" Terminal mode adjustments
+" TODO find a way to eliminate bin/fish
 au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
-au TermOpen * setlocal statusline=\ 
+au TermOpen * setlocal statusline=[term] nocursorline
 
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
@@ -60,53 +73,35 @@ cabbr <expr> %% expand('%:p:h')
 " Fix those pesky situations where you edit & need sudo to save
 cmap w!! w !sudo tee % >/dev/null
 
+" When editing a file, always jump to the last known cursor position.
+" Don't do it for commit messages, when the position is invalid, or when
+" inside an event handler (happens when dropping a file on gvim).
+autocmd BufReadPost *
+  \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
+  \   exe "normal g`\"" |
+  \ endif
+
 " Plugin configurations
 """""""""""""""""""""""
-" Auto open grep in quickfix
-au QuickFixCmdPost *grep* cwindow
-
 " Delete hidden fugitive buffers
 au BufReadPost fugitive://* set bufhidden=delete
 
-" FZF
-let g:fzf_layout = { 'down': '~20%' }
+" FZF madness
+let g:fzf_layout = { 'down': '~30%' }
 
-nnoremap <leader>f :GitFiles<cr>
-nnoremap <leader>l :GitLines<cr>
-nnoremap <leader>g :GitGrepLines<cr>
+nnoremap <leader>f :Files<cr>
 nnoremap <leader>b :Buffers<cr>
-
-function! s:escape(path)
-  return substitute(a:path, ' ', '\\ ', 'g')
-endfunction
-
-function! GitLineHandler(line)
-  let parts = split(a:line, ':')
-  let [fn, lno] = parts[0 : 1]
-  execute 'e '. s:escape(fn)
-  execute lno
-  normal! zz
-endfunction
-
-command! GitLines call fzf#run({
-  \ 'source': 'git grep -n -I --untracked -i .',
-  \ 'sink': function('GitLineHandler'),
-  \ 'down': '40%'
-\ })
-
-command! GitGrepLines call fzf#run({
-  \ 'source': 'git grep -n -I --untracked -i "'.expand("<cword>").'"',
-  \ 'sink': function('GitLineHandler'),
-  \ 'down': '20%'
-\ })
+nnoremap <leader>o :History<cr>
+nnoremap <leader>l :Ag .<cr>
+nnoremap <leader>s yiw:Ag <C-R>"<cr>
+vnoremap <leader>s y:Ag <C-R>"<cr>
 
 " markdown
 let g:vim_markdown_folding_disabled=1
 
-" Custom commands
-"""""""""""""""""
 
-" Better fold text
+" Sensible Fold Text
+""""""""""""""""""""
 fu! CustomFoldText()
   "get first non-blank line
   let fs = v:foldstart
