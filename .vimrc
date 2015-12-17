@@ -1,4 +1,5 @@
 set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.fzf
 
 call vundle#rc()
 
@@ -7,6 +8,7 @@ Bundle 'gmarik/vundle'
 
 " System
 Bundle 'tpope/vim-fugitive'
+Bundle 'junegunn/fzf.vim'
 
 " Syntaxes
 Bundle 'leshill/vim-json'
@@ -21,16 +23,18 @@ Bundle 'mxw/vim-jsx'
 Bundle 'NLKNguyen/papercolor-theme'
 
 colorscheme PaperColor
-set background=light
 
 " Basic config
 syntax on
-filetype plugin on
+filetype plugin indent on
 
-set statusline=\ %m%t\ %r%y%q%=@%{fugitive#head(8)}\ %c,%l\ (%P)\ 
 set hidden
 set clipboard=unnamed
 set nowrap
+set foldignore=
+set list
+set ruler
+set noswapfile
 
 set ignorecase
 set smartcase
@@ -39,35 +43,19 @@ set tabstop=2
 set shiftwidth=2
 set expandtab
 
-set foldignore=
-
-set list
-
-set path=.,,**
-set suffixesadd=.rb,.java
-set wildignore=*/bin/*,*/node_modules/*,*/dist/*,*/bower_components/*
 set wildignorecase
 
 " Custom mappings
-""""""""""""""""""
+"""""""""""""""""
+" Map leader to space
+let mapleader=" "
 
-" Escape terminal mode
-tnoremap <Esc> <C-\><C-n>
-tnoremap <D-v> <C-\><C-n>pi
+" Terminal mode
+au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
+au TermOpen * setlocal statusline=\ 
 
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
-
-" Open terminal in login shell
-cabbr <expr> term "term://zsh\\ -l"
-
-" Change leader
-let mapleader = " "
-let g:mapleader = " "
-
-" General search
-nnoremap <Leader>gg :Ggrep -i <cword><CR>
-nnoremap <Leader>g :Ggrep -i ''<Left>
 
 " Fix those pesky situations where you edit & need sudo to save
 cmap w!! w !sudo tee % >/dev/null
@@ -80,24 +68,43 @@ au QuickFixCmdPost *grep* cwindow
 " Delete hidden fugitive buffers
 au BufReadPost fugitive://* set bufhidden=delete
 
+" FZF
+let g:fzf_layout = { 'down': '~20%' }
+
+nnoremap <leader>f :GitFiles<cr>
+nnoremap <leader>l :GitLines<cr>
+nnoremap <leader>g :GitGrepLines<cr>
+nnoremap <leader>b :Buffers<cr>
+
+function! s:escape(path)
+  return substitute(a:path, ' ', '\\ ', 'g')
+endfunction
+
+function! GitLineHandler(line)
+  let parts = split(a:line, ':')
+  let [fn, lno] = parts[0 : 1]
+  execute 'e '. s:escape(fn)
+  execute lno
+  normal! zz
+endfunction
+
+command! GitLines call fzf#run({
+  \ 'source': 'git grep -n -I --untracked -i .',
+  \ 'sink': function('GitLineHandler'),
+  \ 'down': '40%'
+\ })
+
+command! GitGrepLines call fzf#run({
+  \ 'source': 'git grep -n -I --untracked -i "'.expand("<cword>").'"',
+  \ 'sink': function('GitLineHandler'),
+  \ 'down': '20%'
+\ })
+
 " markdown
 let g:vim_markdown_folding_disabled=1
 
 " Custom commands
-"""""""""""""""""""""""
-
-" Delete all hidden buffers
-fu! DeleteHiddenBuffers()
-  let tpbl=[]
-  call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
-  for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
-    if (matchstr(bufname(buf), "^term:") != "term:")
-      silent execute 'bwipeout' buf
-    endif
-  endfor
-endf
-
-command! DeleteBuffers call DeleteHiddenBuffers()
+"""""""""""""""""
 
 " Better fold text
 fu! CustomFoldText()
@@ -116,9 +123,8 @@ fu! CustomFoldText()
   let foldSizeStr = " " . foldSize . " lines "
   let foldLevelStr = repeat("+--", v:foldlevel)
   let lineCount = line("$")
-  let foldPercentage = printf("[%.1f", (foldSize*1.0)/lineCount*100) . "%] "
-  let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr.foldPercentage))
-  return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
+  let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr))
+  return line . expansionString . foldSizeStr . foldLevelStr
 endf
 
 set foldtext=CustomFoldText()
