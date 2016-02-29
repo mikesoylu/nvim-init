@@ -11,6 +11,7 @@ Bundle 'gmarik/vundle'
 " System
 Bundle 'tpope/vim-fugitive'
 Bundle 'junegunn/fzf.vim'
+Bundle 'qpkorr/vim-bufkill'
 
 " Syntaxes
 Bundle 'leshill/vim-json'
@@ -19,7 +20,9 @@ Bundle 'plasticboy/vim-markdown'
 Bundle 'groenewege/vim-less'
 Bundle 'digitaltoad/vim-jade'
 Bundle 'wavded/vim-stylus'
+Bundle 'pangloss/vim-javascript'
 Bundle 'mxw/vim-jsx'
+Bundle 'posva/vim-vue'
 
 " Colorscheme
 Bundle 'NLKNguyen/papercolor-theme'
@@ -36,13 +39,11 @@ set nowrap
 set foldignore=
 set list
 set ruler
-set cursorline
 
 set nobackup
 set nowritebackup
 set noswapfile
 
-set splitbelow
 set splitright
 
 set ignorecase
@@ -52,6 +53,15 @@ set tabstop=2
 set shiftwidth=2
 set expandtab
 
+set cursorline
+set number
+
+" Neovim settings
+"""""""""""""""""
+if has('nvim')
+  au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
+  au TermOpen * setlocal statusline=term
+endif
 
 " Custom mappings
 """""""""""""""""
@@ -62,10 +72,8 @@ let mapleader=" "
 vnoremap * y/<C-R>"<CR>
 vnoremap # y?<C-R>"<CR>
 
-" Terminal mode adjustments
-" TODO find a way to eliminate bin/fish
-au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
-au TermOpen * setlocal statusline=[term] nocursorline
+" Use bufkill
+cabbr <expr> bd 'BD'
 
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
@@ -86,19 +94,22 @@ autocmd BufReadPost *
 " Delete hidden fugitive buffers
 au BufReadPost fugitive://* set bufhidden=delete
 
-" FZF madness
-let g:fzf_layout = { 'down': '~30%' }
+" Let react files have js extensions
+let g:jsx_ext_required = 0
 
-nnoremap <leader>f :Files<cr>
-nnoremap <leader>b :Buffers<cr>
-nnoremap <leader>o :History<cr>
-nnoremap <leader>l :Ag .<cr>
+" FZF madness
+let g:fzf_layout = { 'window': 'top 12new' }
+
+nnoremap <leader>f :GitFiles<cr>
+nnoremap <leader>g :Buffers<cr>
+nnoremap <leader>h :History<cr>
+nnoremap <leader>m :Marks<cr>
+nnoremap <leader>l :Ag ^<cr>
 nnoremap <leader>s yiw:Ag <C-R>"<cr>
 vnoremap <leader>s y:Ag <C-R>"<cr>
 
 " markdown
 let g:vim_markdown_folding_disabled=1
-
 
 " Sensible Fold Text
 """"""""""""""""""""
@@ -118,7 +129,7 @@ fu! CustomFoldText()
   let foldSizeStr = " " . foldSize . " lines "
   let foldLevelStr = repeat("+--", v:foldlevel)
   let lineCount = line("$")
-  let expansionString = repeat(".", w - strwidth(foldSizeStr.line.foldLevelStr))
+  let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr))
   return line . expansionString . foldSizeStr . foldLevelStr
 endf
 
