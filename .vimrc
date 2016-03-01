@@ -1,31 +1,35 @@
-set rtp+=~/.vim/bundle/vundle/
+set rtp+=~/.vim/bundle/neobundle.vim/
 set rtp+=~/.fzf
 
-call vundle#rc()
+" Start NeoBundle
+call neobundle#begin(expand('~/.vim/bundle/'))
 
 " General Setup
 """""""""""""""
-" Vundle
-Bundle 'gmarik/vundle'
+" NeoBundle
+NeoBundleFetch 'Shougo/neobundle.vim'
 
 " System
-Bundle 'tpope/vim-fugitive'
-Bundle 'junegunn/fzf.vim'
-Bundle 'qpkorr/vim-bufkill'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'junegunn/fzf.vim'
+NeoBundle 'qpkorr/vim-bufkill'
 
 " Syntaxes
-Bundle 'leshill/vim-json'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'groenewege/vim-less'
-Bundle 'digitaltoad/vim-jade'
-Bundle 'wavded/vim-stylus'
-Bundle 'pangloss/vim-javascript'
-Bundle 'mxw/vim-jsx'
-Bundle 'posva/vim-vue'
+NeoBundle 'leshill/vim-json'
+NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'plasticboy/vim-markdown'
+NeoBundle 'groenewege/vim-less'
+NeoBundle 'digitaltoad/vim-jade'
+NeoBundle 'wavded/vim-stylus'
+NeoBundle 'pangloss/vim-javascript'
+NeoBundle 'mxw/vim-jsx'
+NeoBundle 'posva/vim-vue'
 
 " Colorscheme
-Bundle 'NLKNguyen/papercolor-theme'
+NeoBundle 'NLKNguyen/papercolor-theme'
+
+" End NeoBundle
+call neobundle#end()
 
 colorscheme PaperColor
 
@@ -54,12 +58,14 @@ set shiftwidth=2
 set expandtab
 
 set cursorline
-set number
 
 " Neovim settings
 """""""""""""""""
 if has('nvim')
+  " Only map esc in shell
   au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
+
+  " term statusline aesthetics
   au TermOpen * setlocal statusline=term
 endif
 
@@ -71,9 +77,6 @@ let mapleader=" "
 " Visually search by yanking selected text
 vnoremap * y/<C-R>"<CR>
 vnoremap # y?<C-R>"<CR>
-
-" Use bufkill
-cabbr <expr> bd 'BD'
 
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
@@ -91,6 +94,9 @@ autocmd BufReadPost *
 
 " Plugin configurations
 """""""""""""""""""""""
+" Use bufkill
+cabbr <expr> bd 'BD'
+
 " Delete hidden fugitive buffers
 au BufReadPost fugitive://* set bufhidden=delete
 
@@ -101,7 +107,7 @@ let g:jsx_ext_required = 0
 let g:fzf_layout = { 'window': 'top 12new' }
 
 nnoremap <leader>f :GitFiles<cr>
-nnoremap <leader>g :Buffers<cr>
+nnoremap <leader>b :Buffers<cr>
 nnoremap <leader>h :History<cr>
 nnoremap <leader>m :Marks<cr>
 nnoremap <leader>l :Ag ^<cr>
