@@ -11,8 +11,12 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " System
 NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'junegunn/fzf.vim'
+NeoBundle 'mikesoylu/fzf.vim'
 NeoBundle 'qpkorr/vim-bufkill'
+NeoBundle 'takac/vim-hardtime'
+NeoBundle 'henrik/vim-qargs'
+NeoBundle 'neomake/neomake'
+NeoBundle 'justinmk/vim-sneak'
 
 " Syntaxes
 NeoBundle 'leshill/vim-json'
@@ -24,6 +28,7 @@ NeoBundle 'wavded/vim-stylus'
 NeoBundle 'pangloss/vim-javascript'
 NeoBundle 'mxw/vim-jsx'
 NeoBundle 'posva/vim-vue'
+NeoBundle 'rust-lang/rust.vim'
 
 " Colorscheme
 NeoBundle 'NLKNguyen/papercolor-theme'
@@ -37,12 +42,17 @@ colorscheme PaperColor
 syntax on
 filetype plugin indent on
 
+set spelllang=en,tr
+set spellfile=~/.config/nvim/spell/words.add
+
 set hidden
 set clipboard=unnamed
 set nowrap
 set foldignore=
 set list
 set ruler
+set textwidth=80
+set number
 
 set nobackup
 set nowritebackup
@@ -56,8 +66,6 @@ set smartcase
 set tabstop=2
 set shiftwidth=2
 set expandtab
-
-set cursorline
 
 " Neovim settings
 """""""""""""""""
@@ -86,7 +94,7 @@ cmap w!! w !sudo tee % >/dev/null
 
 " When editing a file, always jump to the last known cursor position.
 " Don't do it for commit messages, when the position is invalid, or when
-" inside an event handler (happens when dropping a file on gvim).
+" inside an event handler.
 autocmd BufReadPost *
   \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
   \   exe "normal g`\"" |
@@ -94,6 +102,37 @@ autocmd BufReadPost *
 
 " Plugin configurations
 """""""""""""""""""""""
+
+" Sneak around
+let g:sneak#use_ic_scs = 1
+
+xmap s <Plug>Sneak_s
+xmap S <Plug>Sneak_S
+omap s <Plug>Sneak_s
+omap S <Plug>Sneak_S
+
+hi link SneakStreakTarget ErrorMsg
+hi link SneakStreakMask   WarningMsg
+hi link SneakPluginTarget ErrorMsg
+hi link SneakPluginScope  WarningMsg
+
+" Neomake
+autocmd! BufWritePost,BufWinEnter * Neomake
+
+let g:neomake_warning_sign = {
+  \ 'text': '✕',
+  \ 'texthl': 'WarningMsg',
+  \ }
+
+let g:neomake_error_sign = {
+  \ 'text': '✖︎',
+  \ 'texthl': 'WarningMsg',
+  \ }
+
+" Give yourself a hard time
+let g:hardtime_default_on = 1
+let g:hardtime_maxcount = 2
+
 " Use bufkill
 cabbr <expr> bd 'BD'
 
@@ -106,15 +145,17 @@ let g:jsx_ext_required = 0
 " FZF madness
 let g:fzf_layout = { 'window': 'top 12new' }
 
+nnoremap <leader>j :BLines<cr>
+nnoremap <leader>J :Lines<cr>
 nnoremap <leader>f :GitFiles<cr>
-nnoremap <leader>b :Buffers<cr>
+nnoremap <leader>g :Buffers<cr>
 nnoremap <leader>h :History<cr>
 nnoremap <leader>m :Marks<cr>
-nnoremap <leader>l :Ag ^<cr>
+nnoremap <leader>l :Ag<cr>
 nnoremap <leader>s yiw:Ag <C-R>"<cr>
 vnoremap <leader>s y:Ag <C-R>"<cr>
 
-" markdown
+" Markdown
 let g:vim_markdown_folding_disabled=1
 
 " Sensible Fold Text
