@@ -13,7 +13,6 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'mikesoylu/fzf.vim'
 NeoBundle 'qpkorr/vim-bufkill'
-NeoBundle 'takac/vim-hardtime'
 NeoBundle 'henrik/vim-qargs'
 NeoBundle 'neomake/neomake'
 NeoBundle 'justinmk/vim-sneak'
@@ -44,7 +43,6 @@ filetype plugin indent on
 
 set spelllang=en,tr
 set spellfile=~/.config/nvim/spell/words.add
-
 set hidden
 set clipboard=unnamed
 set nowrap
@@ -53,19 +51,18 @@ set list
 set ruler
 set textwidth=80
 set number
-
+set laststatus=1
 set nobackup
 set nowritebackup
 set noswapfile
-
 set splitright
-
 set ignorecase
 set smartcase
-
 set tabstop=2
 set shiftwidth=2
 set expandtab
+set grepprg=ag\ --nogroup\ --nocolor
+set foldmethod=syntax
 
 " Neovim settings
 """""""""""""""""
@@ -86,6 +83,10 @@ let mapleader=" "
 vnoremap * y/<C-R>"<CR>
 vnoremap # y?<C-R>"<CR>
 
+" Clear highlight
+nnoremap <silent> <esc> :noh<return><esc>
+vnoremap <silent> <esc> :noh<return><esc>
+
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
 
@@ -102,6 +103,8 @@ autocmd BufReadPost *
 
 " Plugin configurations
 """""""""""""""""""""""
+" JavaScript
+let g:javascript_plugin_flow = 1
 
 " Sneak around
 let g:sneak#use_ic_scs = 1
@@ -128,10 +131,6 @@ let g:neomake_error_sign = {
   \ 'text': '✖︎',
   \ 'texthl': 'WarningMsg',
   \ }
-
-" Give yourself a hard time
-let g:hardtime_default_on = 1
-let g:hardtime_maxcount = 2
 
 " Use bufkill
 cabbr <expr> bd 'BD'
