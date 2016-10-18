@@ -51,7 +51,6 @@ set list
 set ruler
 set textwidth=80
 set number
-set laststatus=1
 set nobackup
 set nowritebackup
 set noswapfile
@@ -64,15 +63,18 @@ set expandtab
 set grepprg=ag\ --nogroup\ --nocolor
 set foldmethod=syntax
 
-" Neovim settings
+" Term settings
 """""""""""""""""
-if has('nvim')
-  " Only map esc in shell
-  au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
+" Only map esc in shell
+au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
+au TermOpen * setlocal statusline=~
+au BufEnter * if &buftype == 'terminal' | :startinsert! | endif
 
-  " term statusline aesthetics
-  au TermOpen * setlocal statusline=term
-endif
+" Window movement
+tnoremap <C-w>h <C-\><C-n><C-w>h
+tnoremap <C-w>j <C-\><C-n><C-w>j
+tnoremap <C-w>k <C-\><C-n><C-w>k
+tnoremap <C-w>l <C-\><C-n><C-w>l
 
 " Custom mappings
 """""""""""""""""
@@ -96,7 +98,7 @@ cmap w!! w !sudo tee % >/dev/null
 " When editing a file, always jump to the last known cursor position.
 " Don't do it for commit messages, when the position is invalid, or when
 " inside an event handler.
-autocmd BufReadPost *
+au BufReadPost *
   \ if &ft != 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") |
   \   exe "normal g`\"" |
   \ endif
@@ -120,17 +122,13 @@ hi link SneakPluginTarget ErrorMsg
 hi link SneakPluginScope  WarningMsg
 
 " Neomake
-autocmd! BufWritePost,BufWinEnter * Neomake
+au! BufWritePost,BufWinEnter * Neomake
+let g:neomake_open_list = 2
+let g:neomake_list_height = 2
+let g:neomake_place_signs = 0
 
-let g:neomake_warning_sign = {
-  \ 'text': '✕',
-  \ 'texthl': 'WarningMsg',
-  \ }
-
-let g:neomake_error_sign = {
-  \ 'text': '✖︎',
-  \ 'texthl': 'WarningMsg',
-  \ }
+let g:neomake_javascript_enabled_makers = ['eslint', 'flow']
+let g:neomake_html_enabled_makers = ['htmlhint']
 
 " Use bufkill
 cabbr <expr> bd 'BD'
