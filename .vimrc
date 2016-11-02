@@ -1,5 +1,5 @@
 set rtp+=~/.vim/bundle/neobundle.vim/
-set rtp+=~/.fzf
+set rtp+=/usr/local/opt/fzf/
 
 " Start NeoBundle
 call neobundle#begin(expand('~/.vim/bundle/'))
@@ -11,11 +11,9 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " System
 NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'mikesoylu/fzf.vim'
 NeoBundle 'qpkorr/vim-bufkill'
-NeoBundle 'henrik/vim-qargs'
 NeoBundle 'neomake/neomake'
-NeoBundle 'justinmk/vim-sneak'
+NeoBundle 'mikesoylu/fzf.vim'
 
 " Syntaxes
 NeoBundle 'leshill/vim-json'
@@ -41,8 +39,7 @@ colorscheme PaperColor
 syntax on
 filetype plugin indent on
 
-set spelllang=en,tr
-set spellfile=~/.config/nvim/spell/words.add
+set spelllang=en
 set hidden
 set clipboard=unnamed
 set nowrap
@@ -60,21 +57,28 @@ set smartcase
 set tabstop=2
 set shiftwidth=2
 set expandtab
-set grepprg=ag\ --nogroup\ --nocolor
 set foldmethod=syntax
+set autoindent
+set autoread
+set backspace=indent,eol,start
+set display=lastline
+set hlsearch
+set incsearch
+set langnoremap
+set laststatus=2
+set listchars=tab:>\ ,trail:-,nbsp:+
+set smarttab
+set tabpagemax=50
+set ttyfast
+set viminfo+=!
+set wildmenu
 
 " Term settings
 """""""""""""""""
-" Only map esc in shell
-au TermOpen *bin/fish* tnoremap <buffer> <esc> <C-\><C-n>
-au TermOpen * setlocal statusline=~
-au BufEnter * if &buftype == 'terminal' | :startinsert! | endif
-
-" Window movement
-tnoremap <C-w>h <C-\><C-n><C-w>h
-tnoremap <C-w>j <C-\><C-n><C-w>j
-tnoremap <C-w>k <C-\><C-n><C-w>k
-tnoremap <C-w>l <C-\><C-n><C-w>l
+if has('nvim')
+  " term statusline aesthetics
+  au TermOpen * setlocal statusline=terminal
+endif
 
 " Custom mappings
 """""""""""""""""
@@ -87,7 +91,6 @@ vnoremap # y?<C-R>"<CR>
 
 " Clear highlight
 nnoremap <silent> <esc> :noh<return><esc>
-vnoremap <silent> <esc> :noh<return><esc>
 
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
@@ -105,22 +108,6 @@ au BufReadPost *
 
 " Plugin configurations
 """""""""""""""""""""""
-" JavaScript
-let g:javascript_plugin_flow = 1
-
-" Sneak around
-let g:sneak#use_ic_scs = 1
-
-xmap s <Plug>Sneak_s
-xmap S <Plug>Sneak_S
-omap s <Plug>Sneak_s
-omap S <Plug>Sneak_S
-
-hi link SneakStreakTarget ErrorMsg
-hi link SneakStreakMask   WarningMsg
-hi link SneakPluginTarget ErrorMsg
-hi link SneakPluginScope  WarningMsg
-
 " Neomake
 au! BufWritePost,BufWinEnter * Neomake
 let g:neomake_open_list = 2
@@ -139,9 +126,10 @@ au BufReadPost fugitive://* set bufhidden=delete
 " Let react files have js extensions
 let g:jsx_ext_required = 0
 
-" FZF madness
-let g:fzf_layout = { 'window': 'top 12new' }
+" Markdown
+let g:vim_markdown_folding_disabled=1
 
+" FZF
 nnoremap <leader>j :BLines<cr>
 nnoremap <leader>J :Lines<cr>
 nnoremap <leader>f :GitFiles<cr>
@@ -151,9 +139,6 @@ nnoremap <leader>m :Marks<cr>
 nnoremap <leader>l :Ag<cr>
 nnoremap <leader>s yiw:Ag <C-R>"<cr>
 vnoremap <leader>s y:Ag <C-R>"<cr>
-
-" Markdown
-let g:vim_markdown_folding_disabled=1
 
 " Sensible Fold Text
 """"""""""""""""""""
