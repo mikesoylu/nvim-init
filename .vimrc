@@ -23,7 +23,7 @@ call neobundle#end()
 
 " Basic config
 syntax off
-filetype plugin indent on
+filetype plugin on
 
 set maxmempattern=10000
 set spelllang=en
@@ -33,7 +33,6 @@ set nowrap
 set foldignore=
 set list
 set ruler
-set textwidth=80
 set number
 set nobackup
 set nowritebackup
