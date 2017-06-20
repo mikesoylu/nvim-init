@@ -50,7 +50,6 @@ set backspace=indent,eol,start
 set display=lastline
 set hlsearch
 set incsearch
-set inccommand=nosplit
 set langnoremap
 set laststatus=2
 set listchars=tab:>\ ,trail:-,nbsp:+
@@ -81,6 +80,9 @@ let &statusline .= '%0* %P '
 if has('nvim')
   " term statusline aesthetics
   au TermOpen * setlocal statusline=terminal
+
+  " incremental substitutions
+  set inccommand=nosplit
 
   " insert mode cursor shape
   let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
