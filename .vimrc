@@ -33,7 +33,6 @@ set nowrap
 set foldignore=
 set list
 set ruler
-set number
 set nobackup
 set nowritebackup
 set noswapfile
@@ -61,19 +60,18 @@ set wildmenu
 set re=1 " use old regex engine
 set undofile
 set undodir=~/.vim_undo
+set colorcolumn=80
 
 " Statusline
 """"""""""""
-let &statusline .= '%0*[%n]'
+let &statusline .= '%1*%{neomake#statusline#QflistStatus("C ")}'
+let &statusline .= '%1*%{neomake#statusline#LoclistStatus("L ")}'
+let &statusline .= '%0* %l'
+let &statusline .= '%0*:%c'
 let &statusline .= '%0* %<%F'
 let &statusline .= '%#Error#%m%r%w'
+let &statusline .= '%0* [%L]'
 let &statusline .= '%0* %y'
-let &statusline .= '%0* %='
-let &statusline .= '%#Error#%{neomake#statusline#QflistStatus("C ")}'
-let &statusline .= '%#Error#%{neomake#statusline#LoclistStatus("L ")}'
-let &statusline .= '%0* %c'
-let &statusline .= '%0* %P '
-
 
 " Neovim settings
 """""""""""""""""
@@ -116,7 +114,7 @@ au BufReadPost *
 " Neomake
 au! BufWritePost,BufWinEnter * Neomake
 let g:neomake_place_signs = 0
-let g:neomake_javascript_enabled_makers = ['eslint', 'flow']
+let g:neomake_javascript_enabled_makers = ['eslint']
 let g:neomake_html_enabled_makers = ['htmlhint']
 
 " Use bufkill
