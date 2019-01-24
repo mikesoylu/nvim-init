@@ -15,14 +15,14 @@ NeoBundle 'qpkorr/vim-bufkill'
 NeoBundle 'henrik/vim-qargs'
 NeoBundle 'neomake/neomake'
 NeoBundle 'mikesoylu/fzf.vim'
-NeoBundle 'reedes/vim-pencil'
-NeoBundle 'ahw/vim-hooks'
+NeoBundle 'mikesoylu/minimal'
+NeoBundleLazy 'reedes/vim-pencil', {'autoload':{'filetypes':['markdown']}}
+NeoBundleLazy 'jelera/vim-javascript-syntax', {'autoload':{'filetypes':['javascript']}}
 
 " End NeoBundle
 call neobundle#end()
 
 " Basic config
-syntax off
 filetype plugin on
 
 set maxmempattern=10000
@@ -51,19 +51,23 @@ set hlsearch
 set incsearch
 set langnoremap
 set laststatus=2
-set listchars=tab:>\ ,trail:-,nbsp:+
+set listchars=tab:›\ ,trail:⋅,nbsp:+,space:⋅
 set smarttab
 set tabpagemax=50
-set ttyfast
 set viminfo+=!
 set wildmenu
-set re=1 " use old regex engine
 set undofile
 set undodir=~/.vim_undo
 set colorcolumn=80
+set nowrapscan
+set guioptions=
+
+" Colors
+colorscheme minimal
 
 " Statusline
 """"""""""""
+let &statusline = ''
 let &statusline .= '%1*%{neomake#statusline#QflistStatus("C ")}'
 let &statusline .= '%1*%{neomake#statusline#LoclistStatus("L ")}'
 let &statusline .= '%0* %l'
@@ -73,11 +77,21 @@ let &statusline .= '%#Error#%m%r%w'
 let &statusline .= '%0* [%L]'
 let &statusline .= '%0* %y'
 
+" Vim8.1 settings
+if exists('+termwinkey')
+  set termwinkey=<C-B>
+  tnoremap <C-Bslash><C-Bslash> <C-B>N
+  tnoremap <D-v> <C-B>"0
+endif
+
 " Neovim settings
 """""""""""""""""
 if has('nvim')
   " term statusline aesthetics
   au TermOpen * setlocal statusline=terminal
+
+  " remap escape terminal
+  tnoremap <C-\><C-\> <C-\><C-n>
 
   " incremental substitutions
   set inccommand=nosplit
@@ -116,6 +130,9 @@ au! BufWritePost,BufWinEnter * Neomake
 let g:neomake_place_signs = 0
 let g:neomake_javascript_enabled_makers = ['eslint']
 let g:neomake_html_enabled_makers = ['htmlhint']
+let g:neomake_markdown_enabled_makers = ['writegood']
+let g:neomake_text_enabled_makers = ['writegood']
+call neomake#configure#automake('nrwi', 100)
 
 " Use bufkill
 cabbr <expr> bd 'BD'
@@ -145,16 +162,14 @@ nnoremap <leader>l :Ag<cr>
 nnoremap <leader>s yiw:Ag <C-R>"<cr>
 vnoremap <leader>s y:Ag <C-R>"<cr>
 
-" Enable Syntax for diff files
-""""""""""""""""""""""""""""""
-augroup PatchHighlight
-  autocmd!
-  autocmd BufEnter  *.patch,*.diff  let b:syntax_was_on = exists("syntax_on")
-  autocmd BufEnter  *.patch,*.diff  syntax enable
-  autocmd BufLeave  *.patch,*.diff  if !getbufvar("%","syntax_was_on")
-  autocmd BufLeave  *.patch,*.diff      syntax off
-  autocmd BufLeave  *.patch,*.diff  endif
-augroup END
+" Netrw Settings
+let g:netrw_banner = 0
+let g:netrw_liststyle = 3
+
+" Smooth scroll
+"""""""""""""""
+:map <C-U> <C-Y><C-Y><C-Y><C-Y><C-Y><C-Y><C-Y><C-Y><C-Y>
+:map <C-D> <C-E><C-E><C-E><C-E><C-E><C-E><C-E><C-E><C-E>
 
 " Sensible Fold Text
 """"""""""""""""""""
