@@ -18,26 +18,21 @@ $ git clone git@github.com:mikesoylu/vim-dotfiles.git ~/.vim && ln -s ~/.vim/.vi
 $ mkdir ~/.config; ln -s ~/.vim ~/.config/nvim
 ```
 
-3. Install NeoBundle, as per their [instructions](https://github.com/Shougo/neobundle.vim#quick-start):
+3. Install vim-plug, as per their [instructions](https://github.com/junegunn/vim-plug):
 
 ```sh
-$ curl https://raw.githubusercontent.com/Shougo/neobundle.vim/master/bin/install.sh > install.sh
-$ sh ./install.sh
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
-4. Install FZF [instructions](https://github.com/junegunn/fzf#installation):
-
-```sh
-$ brew install fzf
-```
-
-5. Install ag [instructions](https://github.com/ggreer/the_silver_searcher#installing):
+4. Install ag + ripgrep:
 
 ```sh
 $ brew install the_silver_searcher
+$ brew install ripgrep
 ```
 
-6. Finally, we need to launch Vim and then invoke the appropriate NeoBundle commands to install all of the bundles using the `:NeoBundleInstall` command.
+5. Finally, we need to launch Vim and install plugins using the `:PlugInstall` command.
 
 And that's it! Be sure to source your newly installed configuration (`:source $MYVIMRC` from inside Vim, or just restart a new editor session), and you should be good to go.
 

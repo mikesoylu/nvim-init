@@ -1,26 +1,17 @@
-set rtp+=~/.vim/bundle/neobundle.vim/
-set rtp+=/usr/local/opt/fzf/
+call plug#begin('~/.vim/plugged')
 
-" Start NeoBundle
-call neobundle#begin(expand('~/.vim/bundle/'))
+" Plugins
+Plug 'tpope/vim-fugitive'
+Plug 'qpkorr/vim-bufkill'
+Plug 'neomake/neomake'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'psliwka/vim-smoothie'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'reedes/vim-pencil'
 
-" General Setup
-"""""""""""""""
-" NeoBundle
-NeoBundleFetch 'Shougo/neobundle.vim'
-
-" System
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'qpkorr/vim-bufkill'
-NeoBundle 'henrik/vim-qargs'
-NeoBundle 'neomake/neomake'
-NeoBundle 'mikesoylu/fzf.vim'
-NeoBundle 'mikesoylu/minimal'
-NeoBundleLazy 'reedes/vim-pencil', {'autoload':{'filetypes':['markdown']}}
-NeoBundleLazy 'jelera/vim-javascript-syntax', {'autoload':{'filetypes':['javascript']}}
-
-" End NeoBundle
-call neobundle#end()
+" Plugins End
+call plug#end()
 
 " Basic config
 filetype plugin on
@@ -51,7 +42,7 @@ set hlsearch
 set incsearch
 set langnoremap
 set laststatus=2
-set listchars=tab:›\ ,trail:⋅,nbsp:+,space:⋅
+set listchars=tab:›\ ,nbsp:+
 set smarttab
 set tabpagemax=50
 set viminfo+=!
@@ -61,9 +52,12 @@ set undodir=~/.vim_undo
 set colorcolumn=80
 set nowrapscan
 set guioptions=
+set exrc
 
-" Colors
-colorscheme minimal
+" GUI
+if has('gui_running')
+  set guifont=Menlo:h13
+endif
 
 " Statusline
 """"""""""""
@@ -79,8 +73,14 @@ let &statusline .= '%0* %y'
 
 " Vim8.1 settings
 if exists('+termwinkey')
+  " set terminal key
   set termwinkey=<C-B>
-  tnoremap <C-Bslash><C-Bslash> <C-B>N
+
+  " remap escape terminal
+  tnoremap <C-[> <C-B>N
+  tnoremap <D-[> <Esc>
+
+  " let me paste
   tnoremap <D-v> <C-B>"0
 endif
 
@@ -90,8 +90,10 @@ if has('nvim')
   " term statusline aesthetics
   au TermOpen * setlocal statusline=terminal
 
-  " remap escape terminal
-  tnoremap <C-\><C-\> <C-\><C-n>
+  " remap escape in terminal (but not fzf)
+  au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
+  au FileType fzf tunmap <buffer> <Esc>
+  tnoremap <D-[> <Esc>
 
   " incremental substitutions
   set inccommand=nosplit
@@ -134,6 +136,10 @@ let g:neomake_markdown_enabled_makers = ['writegood']
 let g:neomake_text_enabled_makers = ['writegood']
 call neomake#configure#automake('nrwi', 100)
 
+" Smooth Scroll
+let g:smoothie_speed_constant_factor = 20
+let g:smoothie_speed_linear_factor = 20
+
 " Use bufkill
 cabbr <expr> bd 'BD'
 
@@ -149,9 +155,7 @@ augroup pencil
   autocmd FileType text         call pencil#init()
 augroup END
 
-" FZF
-let g:fzf_layout = { 'window': 'top 12new' }
-
+" FZF mappings
 nnoremap <leader>j :BLines<cr>
 nnoremap <leader>J :Lines<cr>
 nnoremap <leader>f :GitFiles<cr>
@@ -162,14 +166,12 @@ nnoremap <leader>l :Ag<cr>
 nnoremap <leader>s yiw:Ag <C-R>"<cr>
 vnoremap <leader>s y:Ag <C-R>"<cr>
 
+" Ag ignore filenames
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+
 " Netrw Settings
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
-
-" Smooth scroll
-"""""""""""""""
-:map <C-U> <C-Y><C-Y><C-Y><C-Y><C-Y><C-Y><C-Y><C-Y><C-Y>
-:map <C-D> <C-E><C-E><C-E><C-E><C-E><C-E><C-E><C-E><C-E>
 
 " Sensible Fold Text
 """"""""""""""""""""

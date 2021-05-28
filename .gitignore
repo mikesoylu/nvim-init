@@ -1,4 +1,6 @@
 bundle/*
 spell/*
+autoload/*
+plugged/*
 view/*
 .netrwhist
