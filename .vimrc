@@ -2,13 +2,17 @@ call plug#begin('~/.vim/plugged')
 
 " Plugins
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 Plug 'qpkorr/vim-bufkill'
-Plug 'neomake/neomake'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'psliwka/vim-smoothie'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'reedes/vim-pencil'
+Plug 'fidian/hexmode'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'preservim/nerdtree'
+Plug 'sonph/onehalf', { 'rtp': 'vim' }
 
 " Plugins End
 call plug#end()
@@ -53,17 +57,39 @@ set colorcolumn=80
 set nowrapscan
 set guioptions=
 set exrc
+set gdefault
+
+colorscheme onehalflight
+set background=light
 
 " GUI
 if has('gui_running')
   set guifont=Menlo:h13
 endif
 
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
+
 " Statusline
 """"""""""""
+function! StatusDiagnostic() abort
+  let info = get(b:, 'coc_diagnostic_info', {})
+  if empty(info) | return '' | endif
+  let msgs = []
+  if get(info, 'error', 0)
+    call add(msgs, 'E' . info['error'])
+  endif
+  if get(info, 'warning', 0)
+    call add(msgs, 'W' . info['warning'])
+  endif
+  return join(msgs, ' ') . ' '
+endfunction
+
 let &statusline = ''
-let &statusline .= '%1*%{neomake#statusline#QflistStatus("C ")}'
-let &statusline .= '%1*%{neomake#statusline#LoclistStatus("L ")}'
+let &statusline .= '%1*%{StatusDiagnostic()}'
 let &statusline .= '%0* %l'
 let &statusline .= '%0*:%c'
 let &statusline .= '%0* %<%F'
@@ -82,6 +108,9 @@ if exists('+termwinkey')
 
   " let me paste
   tnoremap <D-v> <C-B>"0
+
+  " leave space on left
+  set signcolumn=number
 endif
 
 " Neovim settings
@@ -98,8 +127,8 @@ if has('nvim')
   " incremental substitutions
   set inccommand=nosplit
 
-  " insert mode cursor shape
-  let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+  " leave space on left
+  set signcolumn=yes
 endif
 
 " Custom mappings
@@ -125,20 +154,27 @@ au BufReadPost *
   \   exe "normal g`\"" |
   \ endif
 
+" Replace word under cursor
+nnoremap <Leader>r :%s/\<<C-r><C-w>\>/
+
+" Abbreviate copen
+cabbr <expr> cop 'copen'
+
+" Close buffers
+cabbr <expr> bdall 'bufdo bd'
+
 " Plugin configurations
 """""""""""""""""""""""
-" Neomake
-au! BufWritePost,BufWinEnter * Neomake
-let g:neomake_place_signs = 0
-let g:neomake_javascript_enabled_makers = ['eslint']
-let g:neomake_html_enabled_makers = ['htmlhint']
-let g:neomake_markdown_enabled_makers = ['writegood']
-let g:neomake_text_enabled_makers = ['writegood']
-call neomake#configure#automake('nrwi', 100)
 
 " Smooth Scroll
 let g:smoothie_speed_constant_factor = 20
 let g:smoothie_speed_linear_factor = 20
+
+" NERD tree
+cabbr <expr> nf 'NERDTreeFind'
+cabbr <expr> nerd 'NERDTree'
+let NERDTreeShowHidden=1
+let NERDTreeIgnore = ['\.DS_Store$']
 
 " Use bufkill
 cabbr <expr> bd 'BD'
@@ -158,20 +194,77 @@ augroup END
 " FZF mappings
 nnoremap <leader>j :BLines<cr>
 nnoremap <leader>J :Lines<cr>
-nnoremap <leader>f :GitFiles<cr>
+nnoremap <leader>f :Files<cr>
 nnoremap <leader>g :Buffers<cr>
-nnoremap <leader>h :History<cr>
-nnoremap <leader>m :Marks<cr>
-nnoremap <leader>l :Ag<cr>
-nnoremap <leader>s yiw:Ag <C-R>"<cr>
-vnoremap <leader>s y:Ag <C-R>"<cr>
+nnoremap <leader>l :Rg<cr>
+nnoremap <leader>s yiw:Rg <C-R>"<cr>
+vnoremap <leader>s y:Rg <C-R>"<cr>
 
-" Ag ignore filenames
-command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+let g:fzf_layout = { 'window': { 'width': 1, 'height': 1 } }
+let g:fzf_preview_window = ['down:40%', 'ctrl-/']
+
+command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+
 
 " Netrw Settings
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
+
+" Hexmode
+let g:hexmode_patterns = '*.bin,*.exe,*.dat,*.o'
+
+" COC
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> g[ <Plug>(coc-diagnostic-prev)
+nmap <silent> g] <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
 
 " Sensible Fold Text
 """"""""""""""""""""
