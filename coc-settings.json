@@ -2,5 +2,5 @@
   "diagnostic.messageTarget": "echo",
   "coc.preferences.enableFloatHighlight": false,
   "coc.preferences.useQuickfixForLocations": true,
-  "coc.preferences.formatOnSaveFiletypes": ["css", "html", "javascript", "javascriptreact", "typescript", "typescriptreact"]
+  "coc.preferences.formatOnSaveFiletypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
 }

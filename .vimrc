@@ -58,6 +58,7 @@ set nowrapscan
 set guioptions=
 set exrc
 set gdefault
+set mouse=a
 
 colorscheme onehalflight
 set background=light
@@ -140,6 +141,12 @@ let mapleader=" "
 vnoremap * y/<C-R>"<CR>
 vnoremap # y?<C-R>"<CR>
 
+" Args list
+nmap <silent> gi :next<CR>
+nmap <silent> go :previous<CR>
+cabbr <expr> aa 'argadd'
+cabbr <expr> ad 'argdelete'
+
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
 
@@ -173,8 +180,9 @@ let g:smoothie_speed_linear_factor = 20
 " NERD tree
 cabbr <expr> nf 'NERDTreeFind'
 cabbr <expr> nerd 'NERDTree'
-let NERDTreeShowHidden=1
+let NERDTreeShowHidden = 1
 let NERDTreeIgnore = ['\.DS_Store$']
+let NERDTreeAutoDeleteBuffer = 1
 
 " Use bufkill
 cabbr <expr> bd 'BD'
@@ -196,6 +204,7 @@ nnoremap <leader>j :BLines<cr>
 nnoremap <leader>J :Lines<cr>
 nnoremap <leader>f :Files<cr>
 nnoremap <leader>g :Buffers<cr>
+nnoremap <leader>a :Args<cr>
 nnoremap <leader>l :Rg<cr>
 nnoremap <leader>s yiw:Rg <C-R>"<cr>
 vnoremap <leader>s y:Rg <C-R>"<cr>
@@ -204,6 +213,9 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 1 } }
 let g:fzf_preview_window = ['down:40%', 'ctrl-/']
 
 command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-heading --smart-case -- ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+
+command! -bang Args call fzf#run(fzf#vim#with_preview(fzf#wrap('args',
+    \ {'source': map([argidx()]+(argidx()==0?[]:range(argc())[0:argidx()-1])+range(argc())[argidx()+1:], 'argv(v:val)')}, <bang>0)))
 
 
 " Netrw Settings
@@ -248,7 +260,6 @@ nmap <silent> g] <Plug>(coc-diagnostic-next)
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window.
