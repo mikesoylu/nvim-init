@@ -1,6 +1,11 @@
 {
   "diagnostic.messageTarget": "echo",
-  "coc.preferences.enableFloatHighlight": false,
   "coc.preferences.useQuickfixForLocations": true,
-  "coc.preferences.formatOnSaveFiletypes": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+  "coc.preferences.rootPatterns": [".vscode", ".git"],
+  "eslint.packageManager": "yarn",
+  "eslint.autoFixOnSave": true,
+  "eslint.format.enable": true,
+  "eslint.alwaysShowStatus": true,
+  "html.autoClosingTags": false,
+  "typescript.autoClosingTags": false
 }

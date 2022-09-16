@@ -1,18 +1,42 @@
 call plug#begin('~/.vim/plugged')
 
 " Plugins
+"""""""""
+
+" Git
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
+
+" Kill buffers without closing pane
 Plug 'qpkorr/vim-bufkill'
+
+" Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+
+" Smooth scrolling
 Plug 'psliwka/vim-smoothie'
-Plug 'ntpeters/vim-better-whitespace'
+
+" AI
+Plug 'github/copilot.vim'
+
+" Line wrapping
 Plug 'reedes/vim-pencil'
-Plug 'fidian/hexmode'
+
+" Intellisense
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+" File browser
 Plug 'preservim/nerdtree'
+
+" History browser
+Plug 'mbbill/undotree'
+
+" Colorscheme
 Plug 'sonph/onehalf', { 'rtp': 'vim' }
+
+" Better Quickfix behaviour
+Plug 'yssl/QFEnter'
 
 " Plugins End
 call plug#end()
@@ -59,6 +83,7 @@ set guioptions=
 set exrc
 set gdefault
 set mouse=a
+set number relativenumber
 
 colorscheme onehalflight
 set background=light
@@ -93,10 +118,9 @@ let &statusline = ''
 let &statusline .= '%1*%{StatusDiagnostic()}'
 let &statusline .= '%0* %l'
 let &statusline .= '%0*:%c'
-let &statusline .= '%0* %<%F'
+let &statusline .= '%0* %<%f'
 let &statusline .= '%#Error#%m%r%w'
-let &statusline .= '%0* [%L]'
-let &statusline .= '%0* %y'
+let &statusline .= '%0*  %=%{FugitiveHead()} '
 
 " Vim8.1 settings
 if exists('+termwinkey')
@@ -118,7 +142,7 @@ endif
 """""""""""""""""
 if has('nvim')
   " term statusline aesthetics
-  au TermOpen * setlocal statusline=terminal
+  au TermOpen * setlocal statusline=terminal nonumber norelativenumber nospell
 
   " remap escape in terminal (but not fzf)
   au TermOpen * tnoremap <buffer> <Esc> <c-\><c-n>
@@ -137,9 +161,17 @@ endif
 " Map leader to space
 let mapleader=" "
 
+" Special paste
+vnoremap <Leader>p "0p
+nnoremap <Leader>p "0p
+
 " Visually search by yanking selected text
 vnoremap * y/<C-R>"<CR>
 vnoremap # y?<C-R>"<CR>
+
+" Terminal split
+command! -nargs=* TSplit belowright split | resize 20 | terminal <args>
+cabbr <expr> ts 'TSplit'
 
 " Args list
 nmap <silent> gi :next<CR>
@@ -173,6 +205,16 @@ cabbr <expr> bdall 'bufdo bd'
 " Plugin configurations
 """""""""""""""""""""""
 
+" History browser
+nnoremap <Leader>u :UndotreeToggle<CR>
+
+" Quickfix window
+autocmd FileType qf wincmd J
+autocmd FileType qf setlocal nonumber norelativenumber nospell
+let g:qfenter_keymap = {}
+let g:qfenter_keymap.vopen = ['<c-v>']
+let g:qfenter_keymap.hopen = ['<c-x>']
+
 " Smooth Scroll
 let g:smoothie_speed_constant_factor = 20
 let g:smoothie_speed_linear_factor = 20
@@ -183,6 +225,8 @@ cabbr <expr> nerd 'NERDTree'
 let NERDTreeShowHidden = 1
 let NERDTreeIgnore = ['\.DS_Store$']
 let NERDTreeAutoDeleteBuffer = 1
+let NERDTreeMapOpenSplit = '<c-x>'
+let NERDTreeMapPreviewVSplit = '<c-v>'
 
 " Use bufkill
 cabbr <expr> bd 'BD'
@@ -222,24 +266,15 @@ command! -bang Args call fzf#run(fzf#vim#with_preview(fzf#wrap('args',
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
 
-" Hexmode
-let g:hexmode_patterns = '*.bin,*.exe,*.dat,*.o'
+" COC settings
 
-" COC
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+" Popup colors
+highlight CocMenuSel ctermbg=LightGray ctermfg=Black guibg=LightGray guifg=Black
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
+" Make <CR> to accept selected completion item or notify coc.nvim to format
+" <C-g>u breaks current undo, please make your own choice.
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 " Use <c-space> to trigger completion.
 if has('nvim')
   inoremap <silent><expr> <c-space> coc#refresh()
@@ -247,20 +282,18 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-" Use `[g` and `]g` to navigate diagnostics
+" Use `g[` and `g]` to navigate diagnostics
 " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
 nmap <silent> g[ <Plug>(coc-diagnostic-prev)
 nmap <silent> g] <Plug>(coc-diagnostic-next)
 
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gr <Plug>(coc-references)
+nmap <silent> ga <Plug>(coc-codeaction-cursor)
+
+" Use R to rename instead of replace
+nnoremap <silent> R :call <Plug>(coc-rename)
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -276,27 +309,3 @@ function! s:show_documentation()
 endfunction
 
 command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
-
-" Sensible Fold Text
-""""""""""""""""""""
-fu! CustomFoldText()
-  "get first non-blank line
-  let fs = v:foldstart
-  while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
-  endwhile
-  if fs > v:foldend
-    let line = getline(v:foldstart)
-  else
-    let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
-  endif
-
-  let w = winwidth(0) - &foldcolumn - (&number ? 8 : 0)
-  let foldSize = 1 + v:foldend - v:foldstart
-  let foldSizeStr = " " . foldSize . " lines "
-  let foldLevelStr = repeat("+--", v:foldlevel)
-  let lineCount = line("$")
-  let expansionString = repeat(" ", w - strwidth(foldSizeStr.line.foldLevelStr))
-  return line . expansionString . foldSizeStr . foldLevelStr
-endf
-
-set foldtext=CustomFoldText()
