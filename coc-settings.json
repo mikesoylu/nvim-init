@@ -7,5 +7,6 @@
   "eslint.format.enable": true,
   "eslint.alwaysShowStatus": true,
   "html.autoClosingTags": false,
-  "typescript.autoClosingTags": false
+  "typescript.autoClosingTags": false,
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }

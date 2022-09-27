@@ -158,6 +158,13 @@ endif
 
 " Custom mappings
 """""""""""""""""
+
+function! Alias(from, to)
+  exec 'cnoreabbrev <expr> '.a:from
+        \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
+        \ .'? ("'.a:to.'") : ("'.a:from.'"))'
+endfunction
+
 " Map leader to space
 let mapleader=" "
 
@@ -171,13 +178,14 @@ vnoremap # y?<C-R>"<CR>
 
 " Terminal split
 command! -nargs=* TSplit belowright split | resize 20 | terminal <args>
-cabbr <expr> ts 'TSplit'
+call Alias("ts","TSplit")
 
 " Args list
 nmap <silent> gi :next<CR>
 nmap <silent> go :previous<CR>
-cabbr <expr> aa 'argadd'
-cabbr <expr> ad 'argdelete'
+
+call Alias("aa","argadd")
+call Alias("ad","argdelete")
 
 " File-relative commands
 cabbr <expr> %% expand('%:p:h')
@@ -197,10 +205,10 @@ au BufReadPost *
 nnoremap <Leader>r :%s/\<<C-r><C-w>\>/
 
 " Abbreviate copen
-cabbr <expr> cop 'copen'
+call Alias("cop","copen")
 
 " Close buffers
-cabbr <expr> bdall 'bufdo bd'
+call Alias("bdall","bufdo bd")
 
 " Plugin configurations
 """""""""""""""""""""""
@@ -220,8 +228,10 @@ let g:smoothie_speed_constant_factor = 20
 let g:smoothie_speed_linear_factor = 20
 
 " NERD tree
-cabbr <expr> nf 'NERDTreeFind'
-cabbr <expr> nerd 'NERDTree'
+
+call Alias("nf","NERDTreeFind")
+call Alias("nerd","NERDTree")
+
 let NERDTreeShowHidden = 1
 let NERDTreeIgnore = ['\.DS_Store$']
 let NERDTreeAutoDeleteBuffer = 1
@@ -229,7 +239,7 @@ let NERDTreeMapOpenSplit = '<c-x>'
 let NERDTreeMapPreviewVSplit = '<c-v>'
 
 " Use bufkill
-cabbr <expr> bd 'BD'
+call Alias("bd","BD")
 
 " Delete hidden fugitive buffers
 au BufReadPost fugitive://* set bufhidden=delete
