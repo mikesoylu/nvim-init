@@ -2,11 +2,17 @@
   "diagnostic.messageTarget": "echo",
   "coc.preferences.useQuickfixForLocations": true,
   "coc.preferences.rootPatterns": [".vscode", ".git"],
-  "eslint.packageManager": "yarn",
+  "coc.preferences.formatOnSaveFiletypes": ["python"],
+  "python.analysis.typeCheckingMode": "basic",
+  "python.linting.ruffEnabled": true,
+  "python.formatting.provider": "black",
+  "eslint.packageManager": "npm",
   "eslint.autoFixOnSave": true,
   "eslint.format.enable": true,
   "eslint.alwaysShowStatus": true,
   "html.autoClosingTags": false,
+  "tsserver.trace.server": "verbose",
+  "tsserver.log": "verbose",
   "typescript.autoClosingTags": false,
   "typescript.preferences.importModuleSpecifier": "non-relative"
 }

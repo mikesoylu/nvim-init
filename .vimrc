@@ -10,6 +10,9 @@ Plug 'tpope/vim-rhubarb'
 " Kill buffers without closing pane
 Plug 'qpkorr/vim-bufkill'
 
+" Better f & t
+Plug 'dahu/vim-fanfingtastic'
+
 " Fuzzy finder
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
@@ -19,6 +22,7 @@ Plug 'psliwka/vim-smoothie'
 
 " AI
 Plug 'github/copilot.vim'
+Plug 'mikesoylu/ai.vim'
 
 " Line wrapping
 Plug 'reedes/vim-pencil'
@@ -33,10 +37,13 @@ Plug 'preservim/nerdtree'
 Plug 'mbbill/undotree'
 
 " Colorscheme
-Plug 'sonph/onehalf', { 'rtp': 'vim' }
+Plug 'navarasu/onedark.nvim'
 
 " Better Quickfix behaviour
 Plug 'yssl/QFEnter'
+
+" Better syntax
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Plugins End
 call plug#end()
@@ -66,7 +73,7 @@ set autoindent
 set autoread
 set backspace=indent,eol,start
 set display=lastline
-set hlsearch
+set nohlsearch
 set incsearch
 set langnoremap
 set laststatus=2
@@ -83,12 +90,18 @@ set guioptions=
 set exrc
 set gdefault
 set mouse=a
-set number relativenumber
+set cursorline
 
-colorscheme onehalflight
-set background=light
+" Colorscheme
+"""""""""""""
+let g:onedark_config = {
+  \ 'style': 'light',
+  \ 'ending_tildes': v:true,
+\ }
+colorscheme onedark
 
 " GUI
+"""""
 if has('gui_running')
   set guifont=Menlo:h13
 endif
@@ -122,7 +135,18 @@ let &statusline .= '%0* %<%f'
 let &statusline .= '%#Error#%m%r%w'
 let &statusline .= '%0*  %=%{FugitiveHead()} '
 
+" CursorLine
+""""""""""""
+augroup CursorLine
+    au!
+    au VimEnter * setlocal cursorline
+    au WinEnter * setlocal cursorline
+    au BufWinEnter * setlocal cursorline
+    au WinLeave * setlocal nocursorline
+augroup END
+
 " Vim8.1 settings
+"""""""""""""""""
 if exists('+termwinkey')
   " set terminal key
   set termwinkey=<C-B>
@@ -156,25 +180,26 @@ if has('nvim')
   set signcolumn=yes
 endif
 
-" Custom mappings
-"""""""""""""""""
-
+" Better alias function
+"""""""""""""""""""""""
 function! Alias(from, to)
   exec 'cnoreabbrev <expr> '.a:from
         \ .' ((getcmdtype() is# ":" && getcmdline() is# "'.a:from.'")'
         \ .'? ("'.a:to.'") : ("'.a:from.'"))'
 endfunction
 
+" Custom mappings
+"""""""""""""""""
+
 " Map leader to space
 let mapleader=" "
 
 " Special paste
-vnoremap <Leader>p "0p
-nnoremap <Leader>p "0p
+xnoremap <leader>p "_dP
 
 " Visually search by yanking selected text
-vnoremap * y/<C-R>"<CR>
-vnoremap # y?<C-R>"<CR>
+vnoremap * "zy/<C-R>z<CR>
+vnoremap # "zy?<C-R>z<CR>
 
 " Terminal split
 command! -nargs=* TSplit belowright split | resize 20 | terminal <args>
@@ -207,8 +232,24 @@ nnoremap <Leader>r :%s/\<<C-r><C-w>\>/
 " Abbreviate copen
 call Alias("cop","copen")
 
-" Close buffers
+" Delete all buffers
 call Alias("bdall","bufdo bd")
+
+" Delete hidden buffers
+function! DeleteHiddenBuffers()
+  let tpbl=[]
+  let closed = 0
+  call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+  for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
+    if getbufvar(buf, '&mod') == 0
+      silent execute 'bwipeout' buf
+      let closed += 1
+    endif
+  endfor
+  echo "Closed ".closed." hidden buffers"
+endfunction
+
+call Alias("bdhidden","call DeleteHiddenBuffers()")
 
 " Plugin configurations
 """""""""""""""""""""""
@@ -227,8 +268,17 @@ let g:qfenter_keymap.hopen = ['<c-x>']
 let g:smoothie_speed_constant_factor = 20
 let g:smoothie_speed_linear_factor = 20
 
-" NERD tree
+" AI
+let g:ai_no_mappings=1
+let g:ai_context_before=256
+let g:ai_context_after=256
+let g:ai_model='gpt-4'
 
+inoremap <C-l> <Esc>:AI<CR>
+nnoremap <C-l> <Esc>:AI 
+vnoremap <C-l> :AI 
+
+" NERD tree
 call Alias("nf","NERDTreeFind")
 call Alias("nerd","NERDTree")
 
@@ -271,10 +321,12 @@ command! -bang -nargs=* Rg call fzf#vim#grep("rg --column --line-number --no-hea
 command! -bang Args call fzf#run(fzf#vim#with_preview(fzf#wrap('args',
     \ {'source': map([argidx()]+(argidx()==0?[]:range(argc())[0:argidx()-1])+range(argc())[argidx()+1:], 'argv(v:val)')}, <bang>0)))
 
-
 " Netrw Settings
 let g:netrw_banner = 0
 let g:netrw_liststyle = 3
+
+" Python settings
+let g:python3_host_prog = 'python'
 
 " COC settings
 
@@ -300,10 +352,11 @@ nmap <silent> g] <Plug>(coc-diagnostic-next)
 " GoTo code navigation.
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gr <Plug>(coc-references)
+nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> ga <Plug>(coc-codeaction-cursor)
 
 " Use R to rename instead of replace
-nnoremap <silent> R :call <Plug>(coc-rename)
+nnoremap <silent> R <Plug>(coc-rename)
 
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -319,3 +372,6 @@ function! s:show_documentation()
 endfunction
 
 command! -nargs=0 Prettier :call CocAction('runCommand', 'prettier.formatFile')
+
+" Run treesitter
+lua require'nvim-treesitter.configs'.setup{ auto_install = true, highlight = { enable = true }, additional_vim_regex_highlighting = false }
