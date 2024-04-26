@@ -91,12 +91,14 @@ set exrc
 set gdefault
 set mouse=a
 set cursorline
+set background=dark
 
 " Colorscheme
 """""""""""""
+let $BAT_THEME='default'
 let g:onedark_config = {
-  \ 'style': 'light',
-  \ 'ending_tildes': v:true,
+\   'style': 'dark',
+\   'ending_tildes': v:true,
 \ }
 colorscheme onedark
 
@@ -107,8 +109,8 @@ if has('gui_running')
 endif
 
 if exists('+termguicolors')
-  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  " let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  " let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
 
@@ -270,8 +272,8 @@ let g:smoothie_speed_linear_factor = 20
 
 " AI
 let g:ai_no_mappings=1
-let g:ai_context_before=256
-let g:ai_context_after=256
+let g:ai_context_before=512
+let g:ai_context_after=512
 let g:ai_model='gpt-4'
 
 inoremap <C-l> <Esc>:AI<CR>

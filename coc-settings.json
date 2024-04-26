@@ -6,6 +6,7 @@
   "python.analysis.typeCheckingMode": "basic",
   "python.linting.ruffEnabled": true,
   "python.formatting.provider": "black",
+  "inlayHint.enable": false,
   "eslint.packageManager": "npm",
   "eslint.autoFixOnSave": true,
   "eslint.format.enable": true,
