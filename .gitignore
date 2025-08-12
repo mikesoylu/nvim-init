@@ -4,3 +4,5 @@ autoload/*
 plugged/*
 view/*
 .netrwhist
+lazy-lock.json
+.DS_Store
