@@ -18,5 +18,13 @@
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
-  }
+  },
+  "cSpell.userWords": [
+    "Forkable",
+    "Haptics",
+    "Pressable",
+    "gorhom",
+    "semibold",
+    "trpc"
+  ]
 }

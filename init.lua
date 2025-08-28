@@ -1,4 +1,53 @@
 -- =========================
+--  Basic config (options)
+-- =========================
+
+vim.g.mapleader = " "
+vim.opt.maxmempattern = 10000
+vim.opt.spelllang = "en"
+vim.opt.hidden = true
+vim.opt.clipboard = "unnamed"
+vim.opt.wrap = false
+vim.opt.foldignore = ""
+vim.opt.list = true
+vim.opt.ruler = true
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.swapfile = false
+vim.opt.splitright = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.foldmethod = "manual"
+vim.opt.autoindent = true
+vim.opt.autoread = true
+vim.opt.backspace = { "indent", "eol", "start" }
+vim.opt.display = "lastline"
+vim.opt.hlsearch = false
+vim.opt.incsearch = true
+vim.opt.langnoremap = true
+vim.opt.laststatus = 2
+vim.opt.listchars = { tab = "› ", nbsp = "+" }
+vim.opt.smarttab = true
+vim.opt.tabpagemax = 50
+vim.opt.viminfo:append("!")
+vim.opt.wildmenu = true
+vim.opt.undofile = true
+vim.opt.undodir = vim.fn.expand("~/.vim_undo")
+vim.opt.colorcolumn = "80"
+vim.opt.wrapscan = false
+vim.opt.exrc = true
+vim.opt.gdefault = true
+vim.opt.mouse = "a"
+vim.opt.cursorline = true
+vim.opt.background = "dark"
+vim.opt.inccommand = "nosplit"
+vim.opt.signcolumn = "yes"
+
+
+-- =========================
 --  Plugin Manager: lazy.nvim
 -- =========================
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
@@ -53,53 +102,28 @@ require("lazy").setup({
 
   -- Better syntax
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate" },
+
+  -- opencode.nvim: AI-powered code assistant
+  {
+    'NickvanDyke/opencode.nvim',
+    dependencies = { 'folke/snacks.nvim', },
+    ---@type opencode.Config
+    opts = {
+      -- Your configuration, if any
+    },
+    -- stylua: ignore
+    keys = {
+      { '<leader>ot', function() require('opencode').toggle() end, desc = 'Toggle embedded opencode', },
+      { '<leader>oa', function() require('opencode').ask() end, desc = 'Ask opencode', mode = 'n', },
+      { '<leader>oa', function() require('opencode').ask('@selection: ') end, desc = 'Ask opencode about selection', mode = 'v', },
+      { '<leader>op', function() require('opencode').select_prompt() end, desc = 'Select prompt', mode = { 'n', 'v', }, },
+      { '<leader>on', function() require('opencode').command('session_new') end, desc = 'New session', },
+      { '<leader>oy', function() require('opencode').command('messages_copy') end, desc = 'Copy last message', },
+      { '<S-C-u>',    function() require('opencode').command('messages_half_page_up') end, desc = 'Scroll messages up', },
+      { '<S-C-d>',    function() require('opencode').command('messages_half_page_down') end, desc = 'Scroll messages down', },
+    },
+  }
 })
-
--- =========================
---  Basic config (options)
--- =========================
-vim.g.mapleader = " "
-
-vim.opt.maxmempattern = 10000
-vim.opt.spelllang = "en"
-vim.opt.hidden = true
-vim.opt.clipboard = "unnamed"
-vim.opt.wrap = false
-vim.opt.foldignore = ""
-vim.opt.list = true
-vim.opt.ruler = true
-vim.opt.backup = false
-vim.opt.writebackup = false
-vim.opt.swapfile = false
-vim.opt.splitright = true
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
-vim.opt.tabstop = 2
-vim.opt.shiftwidth = 2
-vim.opt.expandtab = true
-vim.opt.foldmethod = "manual"
-vim.opt.autoindent = true
-vim.opt.autoread = true
-vim.opt.backspace = { "indent", "eol", "start" }
-vim.opt.display = "lastline"
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
-vim.opt.langnoremap = true
-vim.opt.laststatus = 2
-vim.opt.listchars = { tab = "› ", nbsp = "+" }
-vim.opt.smarttab = true
-vim.opt.tabpagemax = 50
-vim.opt.viminfo:append("!")
-vim.opt.wildmenu = true
-vim.opt.undofile = true
-vim.opt.undodir = vim.fn.expand("~/.vim_undo")
-vim.opt.colorcolumn = "80"
-vim.opt.wrapscan = false
-vim.opt.exrc = true
-vim.opt.gdefault = true
-vim.opt.mouse = "a"
-vim.opt.cursorline = true
-vim.opt.background = "dark"
 
 -- GUI / truecolor
 if vim.fn.has("gui_running") == 1 then
@@ -156,12 +180,8 @@ vim.api.nvim_create_autocmd("WinLeave", {
 })
 
 -- =========================
---  Neovim-specific settings
+--  Terminal settings
 -- =========================
--- inccommand
-vim.opt.inccommand = "nosplit"
--- leave space on left
-vim.opt.signcolumn = "yes"
 
 -- Terminal aesthetics & keymaps
 vim.api.nvim_create_autocmd("TermOpen", {
@@ -188,7 +208,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- =========================
 --  Command "aliases" (exact-name user commands)
---  (mirrors your cnoreabbrev Alias() usage)
 -- =========================
 
 -- Command-line alias helper (exact-match like your Vimscript)
