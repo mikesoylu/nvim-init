@@ -20,11 +20,36 @@
     "source.fixAll.eslint": true
   },
   "cSpell.userWords": [
+    "APPSTORE",
+    "BROWSERLESS",
+    "ESBUILD",
     "Forkable",
     "Haptics",
+    "MIXPANEL",
+    "Mutex",
     "Pressable",
+    "Remixable",
+    "VITE",
+    "authconfig",
+    "codegen",
+    "deduplication",
+    "demultiplex",
+    "demux",
     "gorhom",
+    "hono",
+    "idempotence",
+    "jsonb",
+    "libsql",
+    "mkdir",
+    "nextjs",
+    "oklch",
+    "pipefail",
+    "podman",
+    "proxying",
+    "ratelimit",
     "semibold",
-    "trpc"
+    "superjson",
+    "trpc",
+    "upsert"
   ]
 }
