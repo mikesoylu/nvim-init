@@ -187,8 +187,9 @@ vim.api.nvim_create_autocmd("TermOpen", {
     vim.opt_local.spell = false
     -- remap <Esc> to normal-mode (except for fzf, handled below)
     vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { buffer = args.buf, silent = true })
+    vim.keymap.set("t", "<C-[>", [[<C-\><C-n>]], { buffer = args.buf, silent = true })
     -- <D-[> to <Esc>
-    vim.keymap.set("t", "<D-[>", [[<Esc>]], { buffer = args.buf, silent = true })
+    vim.keymap.set("t", "<C-Esc>", [[<Esc>]], { buffer = args.buf, silent = true })
   end,
 })
 
