@@ -325,6 +325,7 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 -- Pencil (markdown/text)
 vim.g["pencil#wrapModeDefault"] = "soft"
+vim.g["pencil#conceallevel"] = 0
 local pencil_grp = vim.api.nvim_create_augroup("pencil", { clear = true })
 vim.api.nvim_create_autocmd("FileType", { group = pencil_grp, pattern = { "markdown", "mkd", "text" }, callback = function()
   vim.fn["pencil#init"]()
