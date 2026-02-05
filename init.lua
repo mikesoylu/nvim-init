@@ -274,6 +274,37 @@ alias("bdhidden", "lua delete_hidden_buffers()")
 -- =========================
 --  Keymaps
 -- =========================
+local function copy_file_line_ref(is_visual)
+  local file = vim.fn.expand("%:.")
+  if file == "" then
+    vim.notify("No file path for current buffer", vim.log.levels.WARN)
+    return
+  end
+
+  local ref
+  if is_visual then
+    local l1 = vim.fn.line("v")
+    local l2 = vim.fn.line(".")
+    local start_line = math.min(l1, l2)
+    local end_line = math.max(l1, l2)
+    if start_line == end_line then
+      ref = string.format("%s:%d", file, start_line)
+    else
+      ref = string.format("%s:%d-%d", file, start_line, end_line)
+    end
+  else
+    local line = vim.api.nvim_win_get_cursor(0)[1]
+    ref = string.format("%s:%d", file, line)
+  end
+
+  vim.fn.setreg("+", ref)
+  pcall(vim.fn.setreg, "*", ref)
+  vim.notify("Copied " .. ref)
+end
+
+vim.keymap.set("n", "<leader>y", function() copy_file_line_ref(false) end, { silent = true, desc = "Copy file:line" })
+vim.keymap.set("x", "<leader>y", function() copy_file_line_ref(true) end, { silent = true, desc = "Copy file:line-range" })
+
 -- Special paste (visual mode)
 vim.keymap.set("x", "<leader>p", [["_dP]], { silent = true })
 
