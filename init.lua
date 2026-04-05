@@ -46,6 +46,13 @@ vim.opt.background = "dark"
 vim.opt.inccommand = "nosplit"
 vim.opt.signcolumn = "yes"
 
+local diffopt = vim.opt.diffopt:get()
+diffopt = vim.tbl_filter(function(item)
+  return not item:match("^algorithm:")
+end, diffopt)
+table.insert(diffopt, "algorithm:histogram")
+vim.opt.diffopt = diffopt
+
 
 -- =========================
 --  Plugin Manager: lazy.nvim
