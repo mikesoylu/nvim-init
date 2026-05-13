@@ -312,6 +312,10 @@ end
 vim.keymap.set("n", "<leader>y", function() copy_file_line_ref(false) end, { silent = true, desc = "Copy file:line" })
 vim.keymap.set("x", "<leader>y", function() copy_file_line_ref(true) end, { silent = true, desc = "Copy file:line-range" })
 
+-- Manual folds: select lines to create a fold; press on a fold to remove it.
+vim.keymap.set("x", "<leader>z", "zf", { silent = true, desc = "Create manual fold" })
+vim.keymap.set("n", "<leader>z", "zd", { silent = true, desc = "Delete manual fold" })
+
 -- Special paste (visual mode)
 vim.keymap.set("x", "<leader>p", [["_dP]], { silent = true })
 
